@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- 该配置文件告诉 struts前端控制器   请求对应的java类 -->	
+<struts>
+<!-- 在当前的主struts.xml文件中引入其他的struts配置文件
+	可以引入多个，并且   include需要放在与package平级的位置
+ -->
+	
+	<!-- 设置后缀匹配的内容 -->
+	<constant name="struts.action.extension" value="do,action,,"></constant>
+	
+	<!-- 设置开发模式  程序在保存xml的时候会自动的重新读取xml配置文件信息，所以可以立即生效二不用重启服务器
+	但是由于该方式需要读取xml文件比非开发模式效率低 ，只用于开发测试 -->
+	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
+	
+	<!-- namespace为命名空间，需要在请求路径上加上该命名空间 -->
+	<package name="ssh" extends="struts-default" namespace="/admin">
+	<!-- 跳转到注册页 -->
+	<action name="toSave">
+		<result>
+			/WEB-INF/jsp/regist.jsp
+		</result>
+	</action>
+	
+	<!-- spring整合struts2   spring管理所有的bean创建   
+		所以，struts2的匹配Action类的规则，是从spring的容器中，根据bean的id查找到对应的bean对象
+		来调用该bean对象身上对应的方法  故class的值写的是Spring容器管理的bean的名字（或id）
+	 -->
+	<action name="save" class="adminAction" method="save">
+		<result name="success">
+			/WEB-INF/jsp/login.jsp
+		</result>
+	</action>
+	<!-- 跳转到登录页 -->
+	<action name="toLogin">
+		<result>
+			/WEB-INF/jsp/login.jsp
+		</result>
+	</action>
+	
+	<action name="login" class="adminAction" method="login">
+		<result name="success"><!-- 成功登录处理 -->
+			/WEB-INF/jsp/main.jsp
+		</result>
+		<result name="err"><!-- 登录失败处理 -->
+			/WEB-INF/jsp/login.jsp
+		</result>
+	</action>
+</package>	
+</struts>
+	
+	

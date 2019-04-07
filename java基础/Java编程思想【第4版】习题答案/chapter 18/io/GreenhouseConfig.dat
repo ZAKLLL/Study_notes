@@ -1,0 +1,8 @@
+ThermostatNight: 100000
+LightOn: 200000
+LightOff: 400000
+WaterOn: 600000
+WaterOff: 800000
+Bell: 1000000
+ThermostatDay: 1400000
+Restart: 2000000

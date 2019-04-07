@@ -1,0 +1,36 @@
+<s:select label="用户" name="Mechanismpo" list="#request.mechanismlist" listKey="id" listValue="name" />
+这段代码中 name为mechanismlist中的元素。 listkey 是传给服务器的，listValue是给用户看的！！！
+
+ActionContext.getContext()：
+	 如何获得ActionContext：
+
+      在自定义的拦截器中：使用ActionInvocation.getInvocationContext()或者使用ActionContext.getContext()。
+      在Action类中：让拦截器注入或者使用ActionContext.getContext()。
+      在非Action类中：让Action类传递参数、使用注入机制注入或者使用ActionContext.getContext()。注意：只有运行在request线程中的代码才能调用ActionContext.getContext()，否则返回的是null。
+      在JSP中：一般不需要获得ActionContext本身。
+     如何向ActionContext中存入值：
+
+     在拦截器、Action类、非Action类等Java类中：使用ActionContext.put(Object key, Object value)方法。
+     在JSP中：标签<s:set value="..."/>默认将值存入ActionContext中（当然，<s:set>标签还可以把值存到其他地方）。另外，许多标签都有var属性（以前用的是id属性，现在id属性已被弃用），这个属性能向ActionContext存入值，key为var属性的值，value为标签的value属性的值。（有些文档写的是向ValueStack的context存入值，其实是一样的）
+
+    如何从ActionContext中读取值：
+
+    在拦截器、Action类、非Action类等Java类中：使用ActionContext.get(Object key)方法。
+    在JSP中：使用#开头的Ognl表达式，比如<s:property value="#name"/>会调用ActionContext.get("name")方法。注意：如果某标签的属性默认不作为Ognl表达式解析，则需要使用%{}把表达式括起来，于是就会出现类似“%{#name}的表达式”。（“#”的更多用途参见这里）
+    总之，在JSP中使用ActionContext一方面是由于它是映射结构，另一方面是能读取Action的一些配置。当你需要为许多Action提供通用的值的话，可以让每个Action都提供getXXX()方法，比如：
+	ActionContext.getContext().getSession().put(x,x)  获取的是session，然后用put存入相应的值，只要在session有效状态下，这个值一直可用
+	ActionContext.getContext().put("x", x) 是将对象默认的放入map中。map中原本有request、response、session等基本‘容器
+	ActionContext.getContext().getValueStack().push(x)  在Struts2中，一个请求在最终到达Action的方法之前，Action对象本身会被压入ValueStack，可以把一个对象直接压入到valuestack中
+    但更好的方法是在拦截器或JSP模板中把这些通用的值存放到ActionContext中（因为拦截器或JSP模板往往通用于多个Action）。
+
+
+
+    详细了解ActionContext：
+     (1)struts2框架在解析OGNL表达式的时候，OGNL上下文就是ActionContext，而根对象就是Action对象！
+例如：若给出一个OGNL表达式 : "class.user..name"
+首先判断这个OGNL表达式前缀没有带#，所以这个一个根对象，struts2框架会在值栈的栈顶对象中查找         getclass()方法，得到class对象，然后通过class对象，在其中查找getUer()方法，得到user对象，然后值       user对象中查找getName())方法，得到最终的值！
+    (2)对于客户端发送的每一次请求，struts2框架都会自动的创建一个ActionContext和值栈对象，请求处理完毕以后这两个对象会自动的销毁！ActionContext对象相当于一个大大的容器，里面包含了application、session、parameters、valueSatck、attr属性。(其中valueStack对象就是值栈对象)
+    (3)ActionContext中的application、session、parameters等对象都是非根对象，在OGNL表达式中要访问他们，需要在表达式前面加上#前缀！
+例如：① #appliation.userName等于 ActionContext.getContext().getApplication().get("userName");
+     ② #session.userName等效于ActionContext.getContext().getSession().get("userName");
+     ③ #parameters.userName等ActionContext.getContext()..getParameters().get("userName");

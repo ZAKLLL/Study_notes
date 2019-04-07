@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+
+Name: valve/E37_Valve.class
+Java-Bean: True

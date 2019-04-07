@@ -1,0 +1,32 @@
+vo类和po类的区别：
+	VO，值对象(Value Object)，PO，持久对象(Persisent Object)，它们是由一组属性和属性的get和set方法组成。从结构上看，它们并没有什么不同的地方。但从其意义和本质上来看是完全不同的。
+	１．VO是用new关键字创建，由GC回收的。
+	PO则是向数据库中添加新数据时创建，删除数据库中数据时削除的。并且它只能存活在一个数据库连接中，断开连接即被销毁。
+	２．VO是值对象，精确点讲它是业务对象，是存活在业务层的，是业务逻辑使用的，它存活的目的就是为数据提供一个生存的地方。
+	PO则是有状态的，每个属性代表其当前的状态。它是物理数据的对象表示。使用它，可以使我们的程序与物理数据解耦，并且可以简化对象数据与物理数据之间的转换。
+	３．VO的属性是根据当前业务的不同而不同的，也就是说，它的每一个属性都一一对应当前业务逻辑所需要的数据的名称。
+	PO的属性是跟数据库表的字段一一对应的。
+	PO对象需要实现序列化接口。
+	VO是独立的Java Object。
+
+	session 的常用方法：二、Session组件的常用方法
+	方法	     用法	                 功能
+ 1	save()	session.save(PO对象)	     保存对象的属性值到缓存区中，返回存储的新对象主键值
+ 2	load()	session.load(PO类.class,OID)	 
+                                     按OID读取缓存区中的对象，该方法是延迟加载的，不会立即访问数据库。数据不存在时抛出ObjectNotFoundException异常
+ 3	get()	session.get(PO类.class,OID)	                          
+                                     按OID读取对象，该方法是立即加载的，立即访问数据库。数据不存在时返回null
+ 4	update()	session.update(PO对象)更新一个PO对象，在提交事务后，会真正更新数据库
+ 5	saveOrUpdate()	session.saveOrUpdate(PO对象)	同时包含了save()和update()的功能
+ 6	delete()	session.delete(PO对象)从缓存区中删除对象，并从数据库中删除对应的记录
+ 7	createQuery()	session.createQuery(HQL)	  
+                                      按HQL语句创建Query组件的查询实例，再通过Query.list()方法获得List集合型结果集
+ 8	beginTransaction()	session.beginTransaction()	声明一个事务的开始
+ 9	close()	session.close()	           关闭当前session实例
+
+ 		Session session = sessionFactory.openSession();
+        创建一个Session实例的同时，也为它在内存中创建了一个缓存区，叫“Session缓存区”，也称为“一级缓存”。
+        应用程序访问的PO对象都是存放在Session缓存区中的，应用程序只和缓存区打交道（只访问缓存区）。
+        然后，从缓存区到数据表的保持一致由Hibernate完成，无需应用程序关心。
+        在缓存区中的对象，是按对象标示符(OID)来区分的。OID对应数据表中的主键PK，同时也对应PO类中的标示符属性id。
+        PO类中的id类型适合取：short、long、int型，为了保护id的安全，它的set方法最好为private的。

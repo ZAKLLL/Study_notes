@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+	
+	<util:properties id="props" location="classpath:db.properties" ></util:properties>
+	
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="driverClassName" value="#{props.driver}"></property>
+		<property name="url" value="#{props.url}"></property>
+		<property name="username" value="#{props.user}"></property>
+		<property name="password" value="#{props.password}"></property>
+		
+		<property name="initialSize" value="1"></property>
+		<property name="minIdle" value="1"></property>
+		<property name="maxActive" value="20"></property>
+		
+		<property name="maxWait" value="60000"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="60000"></property>
+		<property name="minEvictableIdleTimeMillis" value="60000"></property>
+		
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		
+	</bean>
+	
+	<bean id="SessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<!--property name="mapperLocations" value="classpath:com/chinasofti/dao/*.xml"></property>
+		<property name="typeAliasesPackage" value="com/chinasofti/entity"></property-->
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+		
+	</bean>
+	
+	<!--  bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.chinasofti.dao"></property>
+		<property name="annotationClass" value="com.chinasofti.dao.MybatisAnnotation"></property>
+	</bean>-->
+	
+	<!-- 创建HibernateTemplate对象 spring提供的用来操作数据库的对象，封装了hibernate的session的功能 -->
+	<bean id="template" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 开启事务注解扫描 -->
+	<!-- <tx:annotation-driven proxy-target-class="true" transaction-manager="txManager"/> -->
+	<!-- 声明事务管理组件 -->
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 声明事务的类型和范围 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+		<!-- 设置事务， 事务处理最小单位是方法  
+				tx:method：配置方法的事务处理机制
+				name:指定哪些方法名能够匹配上规则
+				propagation:事务传播策略   REQUIRED 表示该方法必须处于一个事务当中，如果没有事务
+				则新开启一个事务，如果已经在一个事务当中，则加入该事务
+				read-only：用于控制事务类型    true表示只读事务（查询）    false表示非只读事务(增删改)
+				rollback-for:如果需要非运行时异常也实现事务的回滚操作，需要额外指定
+			-->
+				<tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+				<tx:method name="*" propagation="REQUIRED" read-only="false"
+				 rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 设置切面 -->
+	<!-- 设置切入点  事务一般都是在业务访问层控制，应该尽可能设置在业务层范围 
+			advice-ref ：指定刚才设置的事务切面bean组件  
+		-->
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="txAdvice" pointcut="within(com.chinasofti.etc.service..*)"/>
+	</aop:config>
+
+</beans>

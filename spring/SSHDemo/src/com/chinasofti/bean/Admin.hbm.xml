@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping package="com.chinasofti.bean">
+    	<class name="Admin" table="`admin`">  <!-- Esc下面那个键 ，建议全大写-->
+    		<id name="id" type="integer">
+    			<column name="`id`"></column>
+    			<generator class="identity"></generator>
+    		</id>
+    		<property name="name" type="string" column="`name`" length="50"></property>
+    		<property name="pwd" type="string" column="`pwd`" length="50"></property>
+    		<property name="age" type="integer" column="`age`" ></property>
+    		<property name="birthday" type="date" column="`birthday`" length="50"></property>
+    	</class>
+    </hibernate-mapping>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>SSHDemo</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <!--配置 容器启动应用程序的时候，加载的spring文件设置 -->
+<!-- 启动的时候需要创建的处理spring配置信息加载的类 -->
+<listener>
+	<listener-class>
+		org.springframework.web.context.ContextLoaderListener
+	</listener-class>
+</listener>
+<!-- 设置配置文件的加载路径，通过设置该参数，配置加载类会自动的根据参数的路径查找配置文件 可以自由定义文件名与路径，但需要在此处对应设置 -->
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>classpath:ssh.xml</param-value>
+</context-param>
+<!-- 配置struts2的前端控制器   指定初始化加载的3个文件所在的路径加载 配置文件
+		注意：前面两个默认的配置文件必须加载，后面是指定struts.xml主配置文件可以自由定义文件名与路径，但需要在此处对应设置 
+   -->
+<filter>
+	<filter-name>struts2</filter-name>
+	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	<init-param>
+		<param-name>config</param-name>
+		<param-value>struts-default.xml,struts-plugin.xml,struts.xml</param-value>
+	</init-param>
+</filter>
+<filter-mapping>
+	<filter-name>struts2</filter-name>
+	<url-pattern>/*</url-pattern>
+</filter-mapping>
+  
+</web-app>
