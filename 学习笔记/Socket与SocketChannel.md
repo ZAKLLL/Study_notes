@@ -114,9 +114,3 @@ serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 SocketChannel socketChannel=serverSocketChannel.accept();
 ```
 
-
-
-## 
-
-
-

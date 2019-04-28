@@ -83,4 +83,61 @@
     component.doSomeThing(); 
     ```
 
-    
+
+## 单例模式
+
+1. 双重检查模式(线程安全)
+
+   ```java
+   class Singleton {
+       private volatile static Singleton singleton;
+   
+       //不允许直接被外部调用构造方法
+       private Singleton() {
+   
+       }
+       public static Singleton getSingleton(){
+           if (singleton == null) {
+               synchronized (Singleton.class) {
+                   if (singleton == null) {
+                       singleton = new Singleton();
+                   }
+               }
+           }
+           return singleton;
+       }
+   
+   }
+   ```
+
+2. 静态内部类单例模式
+
+   ```java
+   class Singleton {
+       private Singleton() {
+   
+       }
+   
+       public static Singleton getInstance() {
+           return SingletonHolder.instance;
+       }
+   
+       private static class SingletonHolder {
+           private static final Singleton instance = new Singleton();
+       }
+   }
+   ```
+
+   
+
+3. 枚举单例
+
+   ```java
+   enum Sigleton{
+       Instance
+   }
+   ```
+
+
+***持续补充中***
+

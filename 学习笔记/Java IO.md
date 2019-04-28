@@ -11,6 +11,8 @@
 ```java
 //写入流，添加缓冲装饰器
 BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("path"));
+
+//Dateinpustream也是处理流，装饰器，可以直接从steam中读取java原生数据类型
 ```
 
 

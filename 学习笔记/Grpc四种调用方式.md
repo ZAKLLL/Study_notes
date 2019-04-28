@@ -48,6 +48,7 @@
                 artifact = 'io.grpc:protoc-gen-grpc-java:1.19.0'
             }
         }
+        generateProtoTasks.generatedFilesBaseDir = 'src' // <- that line
         generateProtoTasks {
             all()*.plugins {
                 grpc {}

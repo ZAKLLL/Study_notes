@@ -392,7 +392,6 @@
            try {
              c3 = Class.forName("com.om.reflect.Foo");
            } catch (ClassNotFoundException e) {
-             // TODO Auto-generated catch block
              e.printStackTrace();
            }   //编译器会对FOO类初始化
        ```

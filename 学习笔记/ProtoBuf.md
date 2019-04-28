@@ -54,7 +54,7 @@
 
 + 传送不同的数据对象:
 
-  + 最外城的包为Mymessage ，必须为该DateType指定一种类型，oneof限制只能出现一种类
+  + 最外层的包为Mymessage ，必须为该DateType指定一种类型，oneof限制只能出现一种类
 
   + ```protobuf
     syntax = "proto2";

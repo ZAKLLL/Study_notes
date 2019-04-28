@@ -73,3 +73,8 @@
 ## others
 + 切换用户： su -username
 + 切换至root: sudo su
+
+## java
+
++ 查看java相关的后台 jps
++ 后台运行    nohup java -jar superboot.jar &
