@@ -1,11 +1,6 @@
-类型	占用字节		占用位数
-byte	1			8
-short	2			16
-int		4			32
-long	8			64
-float	4			32
-double	8			64
-char	2			16
+
+
+
 
 
 

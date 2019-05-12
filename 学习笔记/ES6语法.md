@@ -8,7 +8,7 @@
 
   ```javascript
   let arr = ["1", "4", "5"];
-      let arr2 = arr.map(a => parseInt(a));
+  let arr2 = arr.map(a => parseInt(a));
   ```
 
   

@@ -50,7 +50,8 @@
 + 查看所有状态: ps -aux
 
 ### 终止进程：
-+ 终止进程: kill -9[pid]
++ 终止进程: kill -9[pid]    直接终止进程
++ 退出进程： kill  [pid]   让进程正常退出，相当于 kill -15  [pid]
 
 ### 正则表达式：grep
 + 语法：grep [-acinv] [--color=auto] '查找字符串' filename
@@ -77,4 +78,9 @@
 ## java
 
 + 查看java相关的后台 jps
+
 + 后台运行    nohup java -jar superboot.jar &
+
++ tail -f  用于监视file文件的增长
+
+  

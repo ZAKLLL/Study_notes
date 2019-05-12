@@ -2,7 +2,7 @@
 
 ## 对象锁
 
-+ 同步代码块_对象锁（thread.join可表示为当前线程执行完毕后在进行下一个线程执行）
++ **同步代码块_对象锁**（thread.join可表示为当前线程执行完毕后在进行下一个线程执行）
 
   + ```java
     public class SynchronizedObjBlock implements Runnable {
@@ -44,14 +44,14 @@
     }
     ```
 
-+ 方法锁形式：用以修饰普通方法，锁对象默认为this
++ **方法锁形式**：用以修饰普通方法，锁对象默认为this
 
   + ```java
     public class SynchronizedMethodBlock implements Runnable {
         Object object = new Object();
         Object object2 = new Object();
     
-        public  synchronized void method() throws InterruptedException {
+        public synchronized void method() throws InterruptedException {
             System.out.println(Thread.currentThread().getName()+"正在执行");
             Thread.sleep(3000);
             System.out.println(Thread.currentThread().getName()+"结束执行");

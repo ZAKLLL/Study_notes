@@ -50,6 +50,7 @@
     ```
 
     这里可以看到总共卖出了15张票，明显是不对的，因为在我们每次都是new了一个新的Tick_Thread类，所以Tick_Thread中的成员变量tick_count每次都会被初始化为5，如果把变量tickcount设置为static全局变量，则不会出现多卖票的问题，这是因为static不会因为类的实例化而被初始化，当然可以通过设置够造方法的方式传入新的tick_count值，这样效果仍然与代码相同。   
+  
 + 实现Runnable接口  
 
   + ```java
@@ -93,6 +94,68 @@
     ```
 
     则输出结果与第一种方式一致。当然，在这种情况下将tickcount设置为static属性，则仍然可以正常卖票。
+    
+  + 卖票又卖了
 
-+ 总结：所以资源共享，资源冲突问题，实质上是成员变量的属性问题。
+  + ```java
+    public class TicketSell {
+        public static void main(String []args){
+            Tick_Runnable t1=new Tick_Runnable();
+            Thread th1=new Thread(t1,"th1");
+            Thread th2=new Thread(t1,"th2");
+            Thread th3=new Thread(t1,"th3");
+    
+            th1.start();
+            th2.start();
+            th3.start();
+        }
+    }
+    
+    class Tick_Runnable implements Runnable{
+        private int tickcount=500;
+        public void run(){
+            while(tickcount>0){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName()+"正在卖票"+"剩余票数"+--tickcount);
+            }
+        }
+    }
+    //output
+    ...
+    th3正在卖票剩余票数3
+    th1正在卖票剩余票数2
+    th2正在卖票剩余票数2
+    th3正在卖票剩余票数1
+    th1正在卖票剩余票数0
+    th2正在卖票剩余票数-1
+    th3正在卖票剩余票数-2
+    ```
 
+  + 上面这种情况是是因为多个线程同时满足条件，例如当票只有1张的时候，三个线程都进入了while循环，当其中一张卖完后，另外两个线程已经满足执行条件了，就会出现0-1=-1，-1-1=-2的情况。
+
++ 采用同步代码块的方式避免这样的情况
+
+  + ```java
+    class Tick_Runnable implements Runnable{
+        private final Object obj = new Object();
+        private int tickcount=100;
+        public void run(){
+            synchronized (obj) {
+                while(tickcount>0){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(Thread.currentThread().getName()+"正在卖票"+"剩余票数"+--tickcount);
+                }
+            }
+        }
+    }
+    ```
+
+    

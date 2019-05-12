@@ -1,0 +1,4 @@
+graph g {
+  edge[style=dashed]; //定义边的样式, 虚线
+  a -- b [color=red]; //定义边的颜色, 红色 (b和方括号之间必须有空格)
+}

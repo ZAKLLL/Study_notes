@@ -1,0 +1,15 @@
+digraph{
+    rankdir=LR
+    DeadLockTest ->Thread01[label=①先执行]
+    DeadLockTest ->Thread02[label=④后执行]
+
+    Deadload->{m1,m2}[color=green label=持有]
+    OtherService->{S1,S2} [color=green label=持有 ]
+    Thread01->m1[label=②m1永远持有Deadload中的obj锁]
+    m1->S1[label=③s1持有OtherService中的obj锁，但在执行期间会释放]
+    Thread02->S2[label=⑤S2获得S1执行期间释放的锁，并将其永久持有]
+    S2->m2[label=⑥开始调用m2，此时m2的锁被m1持有着，m2无法执行 color=red fontcolor=red]
+    m1->S1[label=⑦m1持续调用s1，s1的锁被S2持有着，双方互相等待造成死锁 color=red fontcolor=red]
+
+
+}
