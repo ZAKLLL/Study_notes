@@ -350,4 +350,206 @@
 
    
 
+### 过滤器
 
++ **全局过滤器**
+
++ ```html
+  <div id="app">
+          <h1 >{{msg|myfilter('hi')}}</h1>
+      </div>
+      <script>
+          //默认传插值表达式为参数，可以自行添加参数
+          Vue.filter("myfilter",function(msg,str){
+              alert(str)
+              return msg.replace(/hello/g,"good");
+          })
+          var vm = new Vue({
+              el: "#app",
+              data: {
+                  msg:"this is hello world , vue's hello world"
+              },
+          })
+  </script>
+  ```
+
++ **私有过滤器**(全局过滤器可以和私有过滤器起相同的名字，当名称相同时，将采用就近原则选择私有的)
+
++ ```html
+  <body>
+      <div id="app">
+          <h1 >{{msg|myfilter('hi')}}</h1>
+          <h1 >{{msg|myfilter2()}}</h1>
+      </div>
+      <script>
+          //全局过滤器
+          //默认传插值表达式为参数，可以自行添加参数
+          Vue.filter("myfilter",function(msg,str){
+              alert(str)
+              return msg.replace(/hello/g,"good");
+          })
+          var vm = new Vue({
+              el: "#app",
+              data: {
+                  msg:"this is hello world , vue's hello world"
+              },
+              filters:{ //定义私有过滤器
+                  myfilter2:function(msg){
+                      return msg.replace(/hello/g,"good--------");
+                  }
+              }
+          })
+      </script>
+  </body>
+  ```
+
+
+### 自定义键盘码
+
++ Vue提供了一部分按键码
+
+  + `.enter`
+  + `.tab`
+  + `.delete` (捕获“删除”和“退格”键)
+  + `.esc`
+  + `.space`
+  + `.up`
+  + `.down`
+  + `.left`
+  + `.right`
+
++ 自定义按键码
+
+  + ```html
+    <input type="text" class="form-control" v-model="name" @keyup.f2="add">
+    //自定义全局按键修饰符
+    Vue.config.keyCodes.f2=113
+    ```
+
+### 自定义指令(自定义私有指令和filters类似)
+
++ + ```javascript
+    <!--此处的v-focus为自定义的focus指令-->
+    <input type="text" class="form-control" v-model="keywords" v-focus>
+    //自定义全局指令 参数一为指令名称,参数二是一个对象，身上有一些指令相关的函数，这些函数可以在特定阶段执行相关操作
+    //定义的时候不用加v- z
+    Vue.directive('focus',{
+    	bind:function(el){ //每当指令绑定到元素上的时候，会立即执行bind函数一次
+                           //注意 在每个函数中第一个参数永远是el,表示被绑定了指令的那个元素，这个el参数是一个原生的js对象
+            // el.focus()
+          },
+       inserted:function(el){el.focus()},  //表示元素插入到dom中的时候回执行inserted函数，只执行一次
+       updated(el) {            //当VNode更新的时候执行update,可能触发多次
+                },
+            })
+    ```
+
+    ```javascript
+    <input type="text" class="form-control" v-model="keywords" v-focus v-color="'blue'">
+    
+    Vue.directive('color',{
+                //样式只要通过指令绑定给了元素，不管元素有没有被插入到页面中去，该元素就已经拥有了内联样式
+        		//binding是钩子函数的参数
+                bind:function(el,binding){
+                    el.style.color=binding.value
+                },
+            })
+    ```
+
+    ```javascript
+  //当只使用bind和update函数的时候，自定义指令函数可写成：
+    directives:{
+        font:function(el,binding){
+            el.style.fontsize=binding.value
+        }
+    }
+    ```
+  
+    
+  
+  + **binding** 钩子函数参数（常用name,value和express）
+  
+    + `name`：指令名，不包括 `v-` 前缀。    
+    + `value`：指令的绑定值，例如：`v-my-directive="1 + 1"`中，绑定值为 `2`。
+    + `oldValue`：指令绑定的前一个值，仅在 `update` 和 `componentUpdated` 钩子中可用。无论值是否改变都可用。
+    + `expression`：字符串形式的指令表达式。例如 `v-my-directive="1 + 1"` 中，表达式为 `"1 + 1"`。
+    + `arg`：传给指令的参数，可选。例如 `v-my-directive:foo`中，参数为 `"foo"`。
+    + `modifiers`：一个包含修饰符的对象。例如：`v-my-directive.foo.bar` 中，修饰符对象为 `{ foo: true, bar: true }`。
+  
+  + 和JS行为有关的操作，最好在inserted中操作，防止JS行为失效
+  
+  + 和样式有关的操作，一般都可以在bind中执行（执行时间更早）
+
+### Vue的生命周期图
+
+![lifecycle](C:\Users\HP\Documents\Study_notes\学习笔记\lifecycle.png)
+
+### 网络请求
+
++ get和post
+
+  + ```html
+    <head>
+        <meta charset="utf-8">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+        <!--vue-resource依赖Vue-->
+        <script src="https://cdn.bootcss.com/vue-resource/1.5.1/vue-resource.min.js"></script>
+        <!--更推荐的请求方式-->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+    </head>
+    
+    <body>
+    
+        <div id="app">
+            <input type="button" value="get请求" @click="getinfo">
+            <input type="button" value="axios-get请求" @click="getinfo2">
+            <input type="button" value="post请求" @click="postinfo">
+            <input type="button" value="axious-post请求" @click="postinfo2">
+        </div>
+        <script>
+            let obj = { "zUserPO": { "id": 1 } }
+            //启用了根路径的情况下，Vue-resource访问使用相对路径
+            Vue.http.options.root='http://localhost:8080/checksys'
+    
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                },
+                methods: {
+                    getinfo() {
+                        this.$http.get('checksys/daliycontent/gettodayContent').then(
+                            function (data) {
+                                console.log(data)
+                            }
+                        )
+                    },
+                    postinfo() {
+                        this.$http.post('checksys/check/getThisWeekCheckDay', obj).then(
+                            function (data) {
+                                console.log(data)
+                            }
+                        )
+                    },
+                    getinfo2() {
+                        axios.get('http://localhost:8080/checksys/daliycontent/gettodayContent').then(
+                            function (data) {
+                                console.log(data)
+                            }
+                        )
+                    },
+                    postinfo2() {
+                        axios.post('http://localhost:8080/check/getThisWeekCheckDay', obj).then(
+                            function (data) {
+                                console.log(data.data)
+                            }
+                        )
+                    }
+                }
+            })
+        </script>
+    </body>
+    </html>
+    ```
+
+  + 

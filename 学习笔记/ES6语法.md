@@ -42,3 +42,18 @@
 
 + object:<string,string>
 
++ 填充字符串方法
+
+  + ```javascript
+    String.padStart(4,"A")  //表示从头填充，填充后为总长度为4，使用A来填充
+    String.padEnd(4,"E")    //表示从尾部填充，填充后为总长度为4，使用E来填充
+    ```
+
++ 字符串模板
+
+  + ```javascript
+    var a="helloworld"
+    console.log(`${a}` )
+    ```
+
+  + 
