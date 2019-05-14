@@ -426,7 +426,9 @@
     Vue.config.keyCodes.f2=113
     ```
 
-### 自定义指令(自定义私有指令和filters类似)
+### 自定义指令(自定义私有指令和filters类似)  
+
++ 具有三个钩子函数：binding(),updated(),inserted()
 
 + + ```javascript
     <!--此处的v-focus为自定义的focus指令-->
@@ -481,6 +483,16 @@
   + 和样式有关的操作，一般都可以在bind中执行（执行时间更早）
 
 ### Vue的生命周期图
+
++ 生命周期函数
+  + beforeCreate(){}
+  + created(){}
+  + beforeMount(){}
+  + mounted(){}
+  + beforeUpdate(){}
+  + update(){}
+  + beforeDestroy(){}
+  + destroyed(){}
 
 ![lifecycle](C:\Users\HP\Documents\Study_notes\学习笔记\lifecycle.png)
 
@@ -552,4 +564,354 @@
     </html>
     ```
 
-  + 
+
+### Vue组件化(组件指向的模板内容有且只能由一个根元素)
+
++ 使用**Vue.extend()**+ **Vue.component()**的方式来创建并使用全局组件
+
+  + ```html
+    	<div id="app">
+            <my-com/>
+      		<my-com2/>
+            <my-com3/>
+        </div>
+      	<template id='temp'>
+            <h1>这是通过template元素，在外部定义的组件结构，这个方式有代码的智能提示和高亮</h1>
+        </template>
+        <script>
+            //1.1使用Vue.extend来创建全局的Vue组件
+            let com1 =Vue.extend({
+                template:'<h1>这是使用Vue.extend 创建的组件</h1>' //通过template，指定了组件要展示的html结构
+            })
+            //1.2使用Vue.Component('组件名称',创建出来的组件模板对象)
+            //如果使用驼峰命名需要再引用组件的时候使用<my-com/>的方式
+            let com2=Vue.component('myCom',com1)
+      		//这是直接使用Vue.component 创建出来的组件
+            let com3=Vue.component('myCom2',{
+                template:'<div> <h1>这是直接使用Vue.component 创建出来的组件</h1> <span>this is span el</span> </div>'
+            }) 
+            let com4=Vue.componet('myCom3',{
+                template:'#temp'
+            })
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                },
+                methods: {
+                }
+            })
+        </script>
+    ```
+
++ 私有组件的定义和Vue.filters类似
+
++ 组件中的data属性和方法
+
++ 使用组件加**v-show**的方法来进行组件切换
+
+  + ```html
+    <body>
+        <div id="app">
+            <input type="button" value="切换" @click="flag=!flag">
+            <my-com v-show='flag'></my-com>
+            <my-com2 v-show='!flag'></my-com2>
+        </div>
+        <template id='temp'>
+            <h2>
+                this MyCom2的内容
+            </h2>
+        </template>
+        <script>
+            //使用Vue.extend来创建全局的Vue组件
+            let com1 =Vue.extend({
+                template:'<h1>this is myCom1</h1>' //通过template，指定了组件要展示的html结构
+            })
+            //1.2使用Vue.Component('组件名称',创建出来的组件模板对象)
+            //如果使用驼峰命名需要再引用组件的时候使用<my-com/>的方式
+            let com2=Vue.component('myCom',com1)
+            let com3=Vue.component('myCom2',{
+                template:'#temp'
+    
+            })
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    flag:false
+                },
+                methods: {
+                }
+            })
+        </script>
+    </body>
+    ```
+
++ 使用<componet/> 标签进行组件切换
+
+  + ```html
+    <body>
+        <div id="app">
+            <a href="#" @click.prevent="togger('com1')">com1</a>
+            <a href="#" @click.prevent="togger('com2')">com2</a>
+            <component :is="comname"></component>
+        </div>
+        <script>
+            let com1 = Vue.component('com1', {
+                template: '<h1>This is Com1</h1>'
+            })
+            let com2 = Vue.component('com2', {
+                template: '<h1>This is Com2</h1>'
+            })
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    comname: 'com1'
+                },
+                methods: {
+                    togger(comname) {
+                        this.comname = comname
+                    }
+                }
+            })
+        </script>
+    </body>
+    ```
+
++ 父组件向子组件传值(通过propos)
+
+  + ***组件中的data()必须一个方法而不是一个对象***。
+
+  + ```html
+    <body>
+        <div id="app">
+            <!--parentmsg绑定的是myCom标签中的propos中的parentmsgs-->
+            <my-com :parentmsg="msg"></my-com>
+        </div>
+        <script>
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    msg: 'This is parent\'s data\'s msg '
+                },
+                methods: {
+                },
+                components: {
+                    myCom: {
+                        template: '<h1>This is myCom Component------{{parentmsg}}-----{{componentmsg}}</h1>',
+                        //props中的数据都是只读的无法重新赋值
+                        props: [
+                            'parentmsg'
+                        ],
+                        //data的数据都是自身获取的，可以重新复制
+                        data(){
+                            return {
+                                componentmsg:'This is componentmsg'
+                            }
+                        }
+                    },
+                }
+            })
+        </script>
+    </body>
+    ```
+
+  + ![SharedScreenshot (2)](C:\Users\HP\Pictures\Saved Pictures\SharedScreenshot (2).jpg)
+
++ 子组件调用父组件的方法并向父组件传值：
+
+  + ```html
+    <body>
+        <div id="app">
+            <!--show不能加括号，加括号代表调用了show方法，是返回show()的结果-->
+            <my-com @func='show'></my-com>
+            <hr>
+            <h1>This is dataFromson ----{{dataFromson}}</h1>
+    
+        </div>
+        <template id="tepm">
+            <div>
+                <h1>This is Componet</h1>
+                <input type="button" value="这是子组件的按钮，点击它触发夫组件传递过来的方法" @click='myclick'>
+            </div>
+        </template>
+        <script>
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    dataFromson: null
+                },
+                methods: {
+                    show(data) {
+                        console.log("This is Parent Component's show() method with args --" + data)
+                        this.dataFromson = data
+                    }
+                },
+                components: {
+                    myCom: {
+                        template: '#tepm',
+                        methods: {
+                            myclick() {
+                                let obj = { name: "张三", age: "16" }
+                                //使用Vue提供的方法调用父组件传递的show方法
+                                this.$emit('func', obj)
+                            }
+                        }
+                    }
+                }
+            })
+        </script>
+    </body>
+    ```
+
++ **Vue操作Dom组件**使用（ref）
+
+  + ```html
+    <body>
+        <div id="app">
+            <input type="button" @click="showref" value="获取dom元素">
+            <h1 ref="myh1"> This is h1</h1>        
+        </div>
+        <script>
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                },
+                methods: {
+                    showref(){
+                        console.log(this.$refs.myh1.innerText)
+                    }
+                }
+            })
+        </script>
+    </body>
+    ```
+
++ Vue路由
+
+  + ```html
+    <body>
+        <div id="app">
+            <p>
+                <!-- 使用 router-link 组件来导航. -->
+                <!-- 通过传入 `to` 属性指定链接. -->
+                <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+                <router-link to="/login">Go to Login</router-link>
+                <router-link to="/register">Go to Register</router-link>
+                <hr>
+                <a href="#/login">Go to Login</a>
+                <a href="#/register">Go to Register</a>
+            </p>
+            <router-view></router-view>
+        </div>
+        <script>
+            const login = {
+                template: '<h1>登录组件</h1>'
+            }
+            const register = {
+                template: '<h1>注册组件</h1>'
+            }
+            const routerObj = new VueRouter({
+                //路由匹配规则  !!是rotus不是Routers
+                routes: [
+                    //每个路由规则都是一个对象，这个对象身上都有两个必要属性
+                    //property1 是path 表示监听哪个路由地址
+                    //property2 是componet 表示，如果路由时前面匹配到的path,则展示对应得component组件
+                    //component 必须是组件的模板对象，不能是组件的引用名称
+                    { path: '/login', component: login },
+                    { path: '/register', component: register }
+                ]
+            })
+            const app = new Vue({
+                router: routerObj //将路由规则对象，注册到Vm实例上用来监听URl的变化
+            }).$mount("#app")
+        </script>
+    </body>
+    
+    ```
+
++ **Vue**使用路由**query**或者**params**传递参数
+
+  + ```html
+    <body>
+        <div id="app">
+            <p>
+                <!--可以直接使用查询字符串-->
+                <router-link to="/login?id=10">Go to Login</router-link>
+                <router-link to="/register/23/'老王'">Go to Register</router-link>
+                <hr>
+                <a href="#/login">Go to Login</a>
+                <a href="#/register">Go to Register</a>
+            </p>
+            <router-view></router-view>
+        </div>
+        <script>
+            const login = {                   //注意这里是route不是router!!!
+                template: '<h1>登录组件---id为{{$route.query.id}}</h1>'
+            }
+            const register = {
+                template: '<h1>注册组件----id为{{$route.params.id}}-----name为{{$route.params.name}}</h1>'
+            }
+            const router = new VueRouter({
+                //路由匹配规则  !!是rotus不是Routers
+                routes: [
+                    { path: '/', redirect: '/login' },
+                    { path: '/login', component: login },
+                    //使用:id进行占位
+                    { path: '/register/:id/:name', component: register }
+                ]
+            })
+            const app = new Vue({
+                router
+            }).$mount("#app")
+        </script>
+    </body>
+    ```
+
++ Vue-Router使用Children路由嵌套
+
+  + ```html
+    <body>
+        <div id="app">
+            <router-link to="/account">Account</router-link>
+            <router-view></router-view>
+        </div>
+        <template id="tmpl">
+            <div>
+                <h1>
+                    This is Account Component
+                </h1>
+                <router-link to="/account/login">Login</router-link>
+                <router-link to="/account/register">Register</router-link>
+                <!--组件嵌套的子组件显示的位置-->
+                <router-view></router-view>
+            </div>
+        </template>
+        <script>
+            const account = {
+                template: '#tmpl'
+            }
+            const login = {
+                template: "<h3>登录</h3>"
+            }
+            const register = {
+                template: '<h3>注册</h3>'
+            }
+            const router = new VueRouter({
+                routes: [
+                    {
+                        path: '/account', component: account,
+                        children: [
+                            { path: 'login', component: login },
+                            { path: 'register', component: register }
+                        ]
+                    }
+                ]
+            })
+            const app = new Vue({
+                el:'#app',
+                router
+            })
+        </script>
+    </body>
+    ```
+
+    
