@@ -762,7 +762,7 @@
     </body>
     ```
 
-+ **Vue操作Dom组件**使用（ref）
+  ### **Vue操作Dom组件**使用（ref）
 
   + ```html
     <body>
@@ -914,4 +914,88 @@
     </body>
     ```
 
-    
++ 使用组件实现经典上左右布局
+
+  + ```html
+    <body>
+        <div id="app">
+            //不添加name 就默认为default
+            <router-view></router-view>
+            <router-view name="left"></router-view>
+            <router-view name="content"></router-view>
+        </div>
+        <script>
+            var headercom={
+                template:'<h1>This is Headercom </h1>'
+            }
+            var leftcom={
+                template:'<h1>This is leftcom </h1>'
+            }
+            var contentcom={
+                template:'<h1>This is contentcom </h1>'
+            }
+            const router = new VueRouter({
+                routes:[
+                    //这里的components一定要加s
+                    {path:'/',components:{
+                        'default':headercom,
+                        'left':leftcom,
+                        'content':contentcom
+                    }}
+                ]
+            })
+            var vm = new Vue({
+                router
+            }).$mount("#app")
+            
+        </script>
+    </body>
+    ```
+
+  + 
+
++ 使用Vue-Computed属性
+
+  + ```html
+    <body>
+        <div id="app">
+            <input type="text" v-model="firstname">+
+            <input type="text" v-model="lastname">=
+            <!--这里直接调用了computed中的fullname，不要再data中声明fullname-->
+            <input type="text" v-model="fullname">
+        </div>
+        <script>
+            var vm = new Vue({
+                data: {
+                    firstname: null,
+                    lastname: null,
+                },
+                computed: {
+                    //监听到被使用的data中的数据发生变化,该函数被调用，当fullname被引用的时候该函数被调用。
+                    'fullname':function(){
+                        return this.firstname+'------'+this.lastname
+                    }
+                },
+            }).$mount('#app')
+        </script>
+    </body>
+    ```
+
++ 组件的Style样式需要使用作用域限定(否则会全局使用该样式):
+
+  + ```html
+    <style scoped>
+     div{
+         color: red
+     }
+    </style>
+    ```
+
+  + 
+
+### Watch Computed Methods之间的区别
+
++ computed：属性的结果会被缓存，除非依赖的响应式属性发变化才会重新计算，主要当作属性使用
++ methods: 方法表示一个具体的操作
++ watch：监听一个对象，键时需要观察的表达式，值对应回调函数，主要用来监听某些特定数据的比那花，从而实现某些具体的业务逻辑操作，可以看作是`computed`和`methods`的结合体
+
