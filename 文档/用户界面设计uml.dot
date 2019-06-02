@@ -1,0 +1,21 @@
+digraph{
+    rankdir=LD
+    App_vue->index_vue
+    index_vue->Register_vue->if_Register
+    index_vue->Login_vue->if_login
+    if_login[shape=diamond]
+    if_login->Login_vue
+    if_Register[shape=diamond]
+    if_Register->Main_vue
+    if_Register->Register_vue
+    if_login->Main_vue
+
+    Main_vue->留言
+    Main_vue->退出登录
+    Main_vue->浏览博客内容
+    Main_vue->赏析美妙的守望先锋世界
+    Main_vue->点击链接访问外部网页
+
+
+
+}

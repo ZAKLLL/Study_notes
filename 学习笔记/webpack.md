@@ -7,7 +7,7 @@
 打包：
 
 + ``` 
-  npx webpack --config webpack.config.js
+  webpack --config webpack.config.js
   ```
 
 main.js:

@@ -18,7 +18,7 @@
 
   ​	use dbname//创建一个新的库
 
-  ​	show dbs      //查看所有的苦
+  ​	show dbs      //查看所有的库
 
   ​	show collection //查看当前库所有集合  
 
@@ -39,10 +39,6 @@
     db.collectionName.remove({k1:v1}，{justOnce:true}) //删除第一个匹配到{k1:v1}的文档
 
     db.collectionName.remove() //清空collectionName集合，集合本身保留
-
-    
-
-    
 
     
 
