@@ -439,7 +439,7 @@ ${sessionScope.user.username}
 
 ```java
  @RequestMapping("/restful/{id}/{name}")
-    public void test(@PathVariable("id")Integer id,@PathVariable("name")String name){
+ public void test(@PathVariable("id")Integer id,@PathVariable("name")String name){
         System.out.println("id为："+id+"姓名为："+name);
 
     }

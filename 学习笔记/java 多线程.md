@@ -640,7 +640,7 @@ main
           this.deadLock = deadLock;
       }
       void s1() {
-          synchronized (obj) {  //4.s1持有OtherService中的obj锁，但在执行期间会释放
+          synchronized (obj) {  //3.s1持有OtherService中的obj锁，但在执行期间会释放
               System.out.println("S1===========================");
           }
       }
@@ -921,4 +921,25 @@ main
     })
     ```
 
-  + 
++ **并发编程三大要素**
+
+  + 原子性
+  + 可见性
+  + 有序性
+  
++ **volatile关键字** 
+
+  + 保证不同线程之间的共享变量可见性
+  
+  + 禁止jvm进行重排序,保证了有序性
+  
+  + **并未保证原子性**
+  
+  + 使用场景：
+  
+    + 状态量的标记
+  
+    + 屏障前后一致性
+  
++ + 不可变对象一定是线程安全的，里面的任何属性或者引用类型的属性都不能被修改：String
+  + 可变对象不一定是不安全的：StringBuffer (需要注意的是StringBuilder不是线程安全的)
