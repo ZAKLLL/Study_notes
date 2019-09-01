@@ -109,13 +109,33 @@ func main(){
     go GetThingDone(param1, param2);
     
     //上例的变种，新建一个匿名方法并执行
-    go func(param1, param2) {
-    }(val1, val2)
+    go func(param1 type, param2 type) { //(param1和param2是函数定义时的参数声明)
+    }(val1, val2) //val1 val2 为传入的实际传入的参数
     
     //直接新建一个 goroutine 并在 goroutine 中执行代码块
     go {
         //do someting...
     }
     ```
+  
++ **init()**函数:
 
-    
+  + 用来初始化信息。先于main（）函数执行
+  + 当包被调用时，首先调用包内所有的init()函数，init()函数可以重复多次定义，但无参数无返回值，一个go文件中可以有多个init函数，调用顺序由编写顺序决定，一个package中可以有多个init()函数，调用顺序由该包下的go文件名顺序决定。
+
++ 空白标志符_ : 
+  
++ **_**  这个符号可以 用来丢弃返回结果，或者用于仅调用导入包中的init（）函数。
+  
++ 时间格式化：
+
+  + ```go
+    now := time.Now()
+    s1 := now.Format("2006年1月2日 15:04:05") //时间转换模板，必须是这个时间
+    										//也可以写成2006/01/02  2006-1-2
+    ```
+
++ 查看对象数据类型：
+
+  + fmt.Println("%T\n",target)
+  + fmt.Println(reflect.typeOf(target))

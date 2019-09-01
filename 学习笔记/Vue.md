@@ -761,6 +761,41 @@
         </script>
     </body>
     ```
+    
+  + 兄弟间组件通信：
+
+    + 新建eventBus.js
+
+      ```js
+      import Vue from 'vue'
+      export default new Vue()
+      ```
+
+    + Component1.vue中监听事件
+
+      ```javascript
+      import eventBus from './eventBus'
+      //...
+      created () {
+        eventBus.$on('my-event', args => {
+        //...
+        }) 
+      }
+      ```
+
+    + Component2.vue中触发事件
+
+      ```javascript
+      import eventBus from './eventBus'
+      //...
+      watch: {
+        list(newValue, oldValue) {
+          eventBus.$emit('my-event', newValue)
+        }
+      }
+      ```
+
+      
 
   ### **Vue操作Dom组件**使用（ref）
 
@@ -999,3 +1034,23 @@
 + methods: 方法表示一个具体的操作
 + watch：监听一个对象，键时需要观察的表达式，值对应回调函数，主要用来监听某些特定数据的比那花，从而实现某些具体的业务逻辑操作，可以看作是`computed`和`methods`的结合体
 
+
+
+## 使用中遇到的一些Bug
+
++ 当使用图片预览插件v-viewer:
+
+  + ```javascript
+    Q:el-dialog的遮罩层会与v-viewer的遮罩层产生冲突，当el-dialog的遮罩层中的z-index的值随着点击次数递增至v-viewer的遮罩层的zindex的值时，viewer的图片预览显示将被el-dialog的遮罩层覆盖。
+    A:通过在导入v-viewer时对v-viewer进行zindex参数的初始化。使v-viewer的zindex的初始化值远远高于el-dialog中的zindex值。而避免v-viewer遮罩层被el-dialog遮罩层覆盖的问题。
+    import Viewer from 'v-viewer'
+    import 'viewerjs/dist/viewer.css'
+    Vue.use(Viewer, {
+      defaultOptions: {
+        zIndex: 3000
+      }
+    })
+    
+    ```
+
+  + 
