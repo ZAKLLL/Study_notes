@@ -173,14 +173,5 @@ ls file
   
   
   
-### 网络工具
 
-+ ss :显示socket状态
-  
-  + ss -lnt|grep <端口号>  查看对应端口号的进程
-  
-+ netstat:
-  + 查看当前服务器访问量:netstat -pnt | grep :80 | wc -l
-
-  
-
+ 

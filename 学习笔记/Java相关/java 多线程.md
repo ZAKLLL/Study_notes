@@ -3,6 +3,7 @@
 ### 生命周期
 
 + ![1556846189358](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1556846189358.png)
++ ![1568083082315](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568083082315.png)
 
 ```java
 Thread t1 = new Thread(new Runnable() {
