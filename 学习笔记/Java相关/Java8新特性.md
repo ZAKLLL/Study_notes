@@ -153,7 +153,7 @@ public static List<Employee> dodo(List<Employee> list, Mypredict<Employee> me) {
 
      ​     	R apply(T t);
 
-  4. Predicate<T>: 断言型接口
+  4. BiPredicate<T>: 断言型接口
 
      ​	boolean test(T t);
 

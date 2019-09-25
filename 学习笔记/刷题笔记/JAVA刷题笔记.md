@@ -219,6 +219,7 @@
   + ![1567421145720](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567421145720.png)
   + GenericServlet类：抽象类，定义一个通用的、独立于底层协议的Servlet。
   + 大多数Servlet通过从GenericServlet或HttpServlet类进行扩展来实现
+  + 抽象类httpServlet,专门用于创建应用于HTTP协议的Servletd
   + ServletConfig接口定义了在Servlet初始化的过程中由Servlet容器传递给Servlet得配置信息对象
   + HttpServletRequest接口扩展ServletRequest接口，为HTTP Servlet提供HTTP请求信息
   
@@ -488,3 +489,29 @@
   + 一致性（C）：在分布式系统中的所有数据备份，在同一时刻是否同样的值。（等同于所有节点访问同一份最新的数据副本）
   + 可用性（A）：在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）
   + 分区容忍性（P）：以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。
+  
++ 在JSP对象中，只有一个**Application**对象：多个用户使用一个Application。
+
++ Java创建对象的5种方式：
+
+    + new 关键字 ：ClassName a=new ClassName();
+    
+    + 使用反射的Class类的newInstance()方法： ObjectName obj = ObjectName.class.newInstance();
+    
+    + 使用反射的Constructor类的newInstance()方法： ObjectName obj = ObjectName.class.getConstructor.newInstance(); 
+    
+    + 使用对象克隆clone()方法： ObjectName obj = obj.clone();
+    
+    + 使用反序列化 （ObjectInputStream）的readObject()方法：:
+    
+      + ```java
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) { ObjectName obj = ois.readObject(); }
+        ```
+    
++ 多线程关键字：
+
+    + 可见性
+    + 有序性
+    + 原子性
+        + volatile可以保证前两个特性
+        + CAS算法，也就是CPU级别的同步指令，相当于乐观锁，可以检测到其他线程对共享数据的变化情况。

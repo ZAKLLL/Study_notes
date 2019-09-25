@@ -1,0 +1,9 @@
+# Http协议
+
++ http请求报文=请求行+请求头+请求内容组成(三个部分分别由空格分隔开来)
+  + ![1568810267601](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568810267601.png)
+  + 请求行=请求方法+空格+请求地址+空格+http协议版本
+  + ![1568810285025](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568810285025.png)
+
++ http应答报文=状态行+应答头+应答内容
+  + ![1568810460603](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568810460603.png)
