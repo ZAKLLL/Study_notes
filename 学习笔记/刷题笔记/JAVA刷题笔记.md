@@ -23,6 +23,12 @@
 
 + 使用CGLib技术直接操作字节码运行，生成大量的动态类 ：会导致JVM内存溢出(spring 使用cglib/动态代理(运行时织入)，AspectJ(编译期织入)实现AOP)
 
+    + 开启aspect-j:
+
+        + ```xml
+            <aop:aspectj-autoproxy proxy-target-class="true"/>
+            ```
+
 + 基本数据类型比较:
 
   + 两个数值进行二元操作时，会有如下的转换操作：
