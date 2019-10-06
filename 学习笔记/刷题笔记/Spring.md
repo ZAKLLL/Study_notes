@@ -21,7 +21,7 @@
   + PROPAGATION_MANDATORY: 支持当前事务，如果当前没有事务，就抛出异常。 
   + PROPAGATION_REQUIRES_NEW: 新建事务，如果当前存在事务，把当前事务挂起。 
   + PROPAGATION_NOT_SUPPORTED: 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。 
-+ PROPAGATION_NEVER: 以非事务方式执行，如果当前存在事务，则抛出异常。 
+  + PROPAGATION_NEVER: 以非事务方式执行，如果当前存在事务，则抛出异常。 
   
 + Spring的两种方式的事务管理：
   + **编程式事务管理：** 通过Transaction Template手动管理事务，实际应用中很少使用，
@@ -76,4 +76,8 @@
       }
       ```
 
-      
+  + Spring 开启cgLIb：
+  
+    + ```xml
+      <aop:aspectj-autoproxy proxy-target-class="true"/>
+      ```

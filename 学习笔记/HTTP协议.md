@@ -7,3 +7,6 @@
 
 + http应答报文=状态行+应答头+应答内容
   + ![1568810460603](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568810460603.png)
+
++ HTTP状态码：
+  + 

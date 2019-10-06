@@ -53,7 +53,7 @@
   + 查看当前运行的容器实例以及之前所有运行过的容器：docker ps -a
   + 查看正在运行的容器的id: docker ps -q
   + 查看所有的容器id: docker ps -aq
-  + 关闭所有容器：docekr stop $(docker ps -aq)
+  + 关闭所有容器：docker stop $(docker ps -aq)
 + 带端口映射的启动：docker run -it -p 8888:8080 <ImageId> ： 将docker 对外暴露的端口为8888，对应容器的端口 8080
 + 带端口映射的启动:   docker run -it -P  <imageId> : 随机映射端口
 

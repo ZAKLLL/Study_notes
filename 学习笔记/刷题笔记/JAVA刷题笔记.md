@@ -23,7 +23,7 @@
 
 + 使用CGLib技术直接操作字节码运行，生成大量的动态类 ：会导致JVM内存溢出(spring 使用cglib/动态代理(运行时织入)，AspectJ(编译期织入)实现AOP)
 
-    + 开启aspect-j:
+    + 开启cglib:
 
         + ```xml
             <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -45,7 +45,7 @@
 
     自动转换按从低到高的顺序转换。不同类型数据间的优先关系如下：
     低 ---------------------------------------------> 高
-    byte,short,char-> int -> long -> float -> double
+    byte->short->char-> int -> long -> float -> double
 
 + 静态变量static在不同的实例中地址一样，在全局区。
 
@@ -325,6 +325,9 @@
   
   + 由**数组+链表**组成的，基于**哈希表的Map**实现，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的。
   
+  + TreeMap也支持<null,null>键值对
+    
+  
 + Socket:
 
     + 客户端通过new Socket()方法创建通信的Socket对象
@@ -520,4 +523,15 @@
     + 有序性
     + 原子性
         + volatile可以保证前两个特性
-        + CAS算法，也就是CPU级别的同步指令，相当于乐观锁，可以检测到其他线程对共享数据的变化情况。
+        + CAS算法，也就是CPU级别的同步指令，相当于乐观锁，可以检测到其他线程对共享数据的变化情况。(ABA问题)
+
++ Java事务的三种类型：
+  + JDBC事务：
+    + 事务是用 Connection 对象控制的。JDBC Connection 接口（ java.sql.Connection ）提供了两种事务模式：**自动提交**和**手工提交**。 java.sql.Connection 提供了以下控制事务的方法：
+  + JTA(Java TransactionAPI) 事务：
+    + 支持多数据库事务同时事务管理,满足分布式系统中的数据的一致性
+    + 两阶段提交
+    + 事务时间太长,锁数据太长
+    + 低性能,低吞吐量
+  + 容器事务：
+    + 容器事务主要是J2EE应用服务器提供的，容器事务大多是基于JTA完成，这是一个基于JNDI的，相当复杂的API实现。
