@@ -101,7 +101,7 @@
   
 + 用ClassLoader加载类，是不会导致类的初始化（也就是说不会执行<clinit>方法）.Class.forName(...)加载类，不但会将类加载，还会执行会执行类的初始化方法.
 
-+ ArralyList<> 初始容量为10,每次扩容大小为之前的1.5倍
++ ArrayList<> 初始容量为10,每次扩容大小为之前的1.5倍
 
 + 接口中的属性在不提供修饰符修饰的情况下，会自动加上public static final
 
@@ -154,9 +154,9 @@
     + 是否可以被GC:
       + 在java语言中，判断一块内存空间是否符合垃圾收集器收集标准的标准只有两个：
     
-        1.给对象赋值为null，以下没有调用过。
+        1.给对象引用赋值为null，以下没有调用过。
     
-        2.给对象赋了新的值，重新分配了内存空间。
+        2.给对象引用赋了新的值，重新分配了内存空间。
       
     + **新生代基本采用复制算法，老年代采用标记-清除算法。cms采用标记清理。**
     
@@ -180,19 +180,31 @@
       + -Xmn 2g:设置年轻代大小为2G.
       + -Xss128k:设置每个线程的堆栈大小. 
       + -XX:SurvivorRatio=4:设置年轻代中Eden区与Survivor区的大小比值.设置为4,则两个Survivor区与一个Eden区的比值为2:4,一个Survivor区占整个年轻代的1/6
+    + JVM 启动默认参数：-Xmx为物理内存的1/4，-Xms为物理内存的1/64，
 
 + ThreadLocal:
   + ThreadLocal存放的值是线程封闭，线程间互斥的，主要用于线程内共享一些数据，避免通过参数来传递
+  
   + 线程的角度看，每个线程都保持一个对其线程局部变量副本的隐式引用，只要线程是活动的并且 ThreadLocal 实例是可访问的；在线程消失之后，其线程局部实例的所有副本都会被垃圾回收
+  
   + 在Thread类中有一个Map，用于存储每一个线程的变量的副本。
+  
   + 对于多线程资源共享的问题，同步机制采用了“以时间换空间”的方式，而ThreadLocal采用了“以空间换时间”的方式
   
   + ThreadLocal使用**开放地址**发开处理**散列冲突**
   
+  + 开放定址法：
+  
+    + 所谓的[开放定址法](http://www.nowamagic.net/academy/tag/开放定址法)就是一旦发生了冲突，就去寻找下一个空的散列地址，只要散列表足够大，空的散列地址总能找到，并将记录存入。
+  
+      公式为：
+  
+      > fi(key) = (f(key)+di) MOD m (di=1,2,3,......,m-1)
+  
 + 引用：
   + 1、强引用：一个对象赋给一个引用就是强引用，比如new一个对象，一个对象被赋值一个对象。
   + 2、软引用：用SoftReference类实现，一般不会轻易回收，只有内存不够才会回收。
-  + 3、弱引用：用WeekReference类实现，一旦垃圾回收已启动，就会回收。
+  + 3、弱引用：用WeakReference类实现，一旦垃圾回收已启动，就会回收。
   + 4、虚引用：不能单独存在，必须和引用队列联合使用。主要作用是跟踪对象被回收的状态
 
 +   ``` i =  ++(i++);``` //编译不通过
@@ -319,9 +331,9 @@
   
   + HashTable使用Enumeration，HashMap使用Iterator.
   
-  + HashMap使用链地址法来解决Hash冲突
+  + **HashMap**使用**链地址法**来解决Hash冲突(hash冲突时直接在Node后面进行添加新的Node)
   
-  + Hashtable 是一个散列表，它存储的内容是键值对(key-value)映射。
+  + Hashtable 是一个**散列表**，它存储的内容是键值对(key-value)映射。
   
   + 由**数组+链表**组成的，基于**哈希表的Map**实现，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的。
   
@@ -535,3 +547,83 @@
     + 低性能,低吞吐量
   + 容器事务：
     + 容器事务主要是J2EE应用服务器提供的，容器事务大多是基于JTA完成，这是一个基于JNDI的，相当复杂的API实现。
+
++ 为什么使用反射加载JDBC:
+  
+    + > 如果使用new com.mysql.jdbc.Driver()这种方式，会对这个具体的类产生依赖。后续如果你要更换数据库驱动，就得重新修改代码。而使用反射的方式，只需要在配置文件中，更改相应的驱动和url即可。----**解耦**
+
+
+
+
+
+
+
+## 多线程
+
++ 死锁：
+
+  + 定义：死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。”那么我们换一个更加规范的定义：“集合中的每一个进程都在等待只能由本集合中的其他进程才能引发的事件，那么该组进程是死锁的。
+
+  + 产生原因：
+
+    1.  互斥条件：一个资源每次只能被一个进程使用。
+    2.  请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
+    3.  不剥夺条件:进程已获得的资源，在末使用完之前，不能强行剥夺。
+    4.  循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。
+
+  + 死锁怎么产生的：![1571066286602](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571066286602.png)
+
+  + ```java
+    public static void main(String[] args) {
+        final Object a = new Object();
+        final Object b = new Object();
+        Thread threadA = new Thread(new Runnable() {
+            public void run() {
+                synchronized (a) {
+                    try {
+                        System.out.println("now i in threadA-locka");
+                        Thread.sleep(1000l);
+                        synchronized (b) {
+                            System.out.println("now i in threadA-lockb");
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+        });
+    
+        Thread threadB = new Thread(new Runnable() {
+            public void run() {
+                synchronized (b) {
+                    try {
+                        System.out.println("now i in threadB-lockb");
+                        Thread.sleep(1000l);
+                        synchronized (a) {
+                            System.out.println("now i in threadB-locka");
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+        });
+    
+        threadA.start();
+        threadB.start();
+    }
+    
+    ```
+
+  + 解决死锁的方法：
+
+    + 1.以确定的顺序获取锁
+    + 2.超时放弃锁
+
++ Tomcat目录结构：
+  + ![1571192788405](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571192788405.png)
++ StackOverflow和OutOfMemery:
+  + OutOfMemory:
+    + 对于一台服务器而言，每一个用户请求，都会产生一个线程来处理这个请求，每一个线程对应着一个栈，栈会分配内存，此时如果请求过多，这时候内存不够了，就会发生栈内存溢出。
+  + StackOverflow:
+    + 栈溢出是指不断的调用方法，不断的压栈，最终超出了栈允许的栈深度，就会发生栈溢出，比如递归操作没有终止，死循环。

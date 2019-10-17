@@ -327,7 +327,7 @@
          ```
 
       2. ```java
-         /实例调用，流返回
+         //实例调用，流返回
                  Iterator<StudentResponse> studentsBuAge = blockingStub.getStudentsBuAge(StudentRequest.newBuilder().setAge(17).build());
                  while (studentsBuAge.hasNext()) {
                      System.out.println(studentsBuAge.next().toString());

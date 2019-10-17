@@ -147,7 +147,8 @@
 
     
 
-  
+  + 文件传输：
+    + ``` docker cp host_path containerID:container_path```
 
 
 
