@@ -621,9 +621,68 @@
     + 2.超时放弃锁
 
 + Tomcat目录结构：
+  
   + ![1571192788405](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571192788405.png)
 + StackOverflow和OutOfMemery:
   + OutOfMemory:
     + 对于一台服务器而言，每一个用户请求，都会产生一个线程来处理这个请求，每一个线程对应着一个栈，栈会分配内存，此时如果请求过多，这时候内存不够了，就会发生栈内存溢出。
   + StackOverflow:
     + 栈溢出是指不断的调用方法，不断的压栈，最终超出了栈允许的栈深度，就会发生栈溢出，比如递归操作没有终止，死循环。
+
+
+
+
+
+## 线程池
+
+### 1. 为什么要用线程池？
+
+线程池提供了一种限制和管理资源（包括执行一个任务）。 每个线程池还维护一些基本统计信息，例如已完成任务的数量。
+
+这里借用《Java并发编程的艺术》提到的来说一下使用线程池的好处：
+
+- **降低资源消耗。** 通过重复利用已创建的线程降低线程创建和销毁造成的消耗。
+- **提高响应速度。** 当任务到达时，任务可以不需要的等到线程创建就能立即执行。
+- **提高线程的可管理性。** 线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。
+
+### 2.  Java 提供了哪几种线程池？他们各自的使用场景是什么？
+
+#### Java 主要提供了下面4种线程池
+
+- **FixedThreadPool：** 该方法返回一个固定线程数量的线程池。该线程池中的线程数量始终不变。当有一个新的任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，待有线程空闲时，便处理在任务队列中的任务。
+- **SingleThreadExecutor：** 方法返回一个只有一个线程的线程池。若多余一个任务被提交到该线程池，任务会被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。
+- **CachedThreadPool：** 该方法返回一个可根据实际情况调整线程数量的线程池。线程池的线程数量不确定，但若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。
+- **ScheduledThreadPoolExecutor：** 主要用来在给定的延迟后运行任务，或者定期执行任务。ScheduledThreadPoolExecutor又分为：ScheduledThreadPoolExecutor（包含多个线程）和SingleThreadScheduledExecutor （只包含一个线程）两种。
+
+#### 各种线程池的适用场景介绍
+
+- **FixedThreadPool：** 适用于为了满足资源管理需求，而需要限制当前线程数量的应用场景。它适用于负载比较重的服务器；
+- **SingleThreadExecutor：** 适用于需要保证顺序地执行各个任务并且在任意时间点，不会有多个线程是活动的应用场景。
+- **CachedThreadPool：** 适用于执行很多的短期异步任务的小程序，或者是负载较轻的服务器；
+- **ScheduledThreadPoolExecutor：** 适用于需要多个后台执行周期任务，同时为了满足资源管理需求而需要限制后台线程的数量的应用场景，
+- **SingleThreadScheduledExecutor：** 适用于需要单个后台线程执行周期任务，同时保证顺序地执行各个任务的应用场景。
+
+### 3.  创建的线程池的方式
+
+**（1） 使用 Executors 创建**
+
+我们上面刚刚提到了 Java 提供的几种线程池，通过 Executors 工具类我们可以很轻松的创建我们上面说的几种线程池。但是实际上我们一般都不是直接使用Java提供好的线程池，另外在《阿里巴巴Java开发手册》中强制线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 构造函数 的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。
+
+```java
+Executors 返回线程池对象的弊端如下：
+
+FixedThreadPool 和 SingleThreadExecutor ： 允许请求的队列长度为 Integer.MAX_VALUE,可能堆积大量的请求，从而导致OOM。
+CachedThreadPool 和 ScheduledThreadPool ： 允许创建的线程数量为 Integer.MAX_VALUE ，可能会创建大量线程，从而导致OOM。
+```
+
+**（2） ThreadPoolExecutor的构造函数创建**
+
+我们可以自己直接调用 ThreadPoolExecutor 的构造函数来自己创建线程池。在创建的同时，给 BlockQueue 指定容量就可以了。示例如下：
+
+```java
+private static ExecutorService executor = new ThreadPoolExecutor(13, 13,
+        60L, TimeUnit.SECONDS,
+        new ArrayBlockingQueue(13));
+```
+
+这种情况下，一旦提交的线程数超过当前可用线程数时，就会抛出java.util.concurrent.RejectedExecutionException，这是因为当前线程池使用的队列是有边界队列，队列已经满了便无法继续处理新的请求。但是异常（Exception）总比发生错误（Error）要好。

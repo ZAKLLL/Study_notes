@@ -148,6 +148,7 @@
     
 
   + 文件传输：
+    
     + ``` docker cp host_path containerID:container_path```
 
 
@@ -161,3 +162,4 @@
   + ![1558773108647](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558773108647.png)
 
     
+
