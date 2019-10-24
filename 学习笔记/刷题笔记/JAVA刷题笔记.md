@@ -1,26 +1,23 @@
 + java中的类是单继承的，但是接口是可以多继承的。
 
-  1. jdk内置工具:
-
-     ```java
-     1、jps：查看本机java进程信息。
++ jdk内置工具:
+  
+     1. jps：查看本机java进程信息。
      
-     2、jstack：打印线程的栈信息，制作线程dump文件。
+     2. jstack：打印线程的栈信息，制作线程dump文件。
      
-     3、jmap：打印内存映射，制作堆dump文件
+     3. jmap：打印内存映射，制作堆dump文件
      
-     4、jstat：性能监控工具
+     4. jstat：性能监控工具
      
-     5、jhat：内存分析工具
+     5. jhat：内存分析工具
      
-     6、jconsole：简易的可视化控制台
+     6. jconsole：简易的可视化控制台
      
-     7、jvisualvm：功能强大的控制台
-     
-     ```
-
+     7. jvisualvm：功能强大的控制台
      
 
+     
 + 使用CGLib技术直接操作字节码运行，生成大量的动态类 ：会导致JVM内存溢出(spring 使用cglib/动态代理(运行时织入)，AspectJ(编译期织入)实现AOP)
 
     + 开启cglib:
@@ -33,19 +30,19 @@
 
   + 两个数值进行二元操作时，会有如下的转换操作：
 
-    如果两个操作数其中有一个是double类型，另一个操作就会转换为double类型。
+    + 如果两个操作数其中有一个是double类型，另一个操作就会转换为double类型。
 
-    否则，如果其中一个操作数是float类型，另一个将会转换为float类型。
+      否则，如果其中一个操作数是float类型，另一个将会转换为float类型。
 
-    否则，如果其中一个操作数是long类型，另一个会转换为long类型。
+      否则，如果其中一个操作数是long类型，另一个会转换为long类型。
 
-    否则，两个操作数都转换为int类型。
+      否则，两个操作数都转换为int类型。
     
   + **自动数据类型转换**
 
-    自动转换按从低到高的顺序转换。不同类型数据间的优先关系如下：
+    + 自动转换按从低到高的顺序转换。不同类型数据间的优先关系如下：
     低 ---------------------------------------------> 高
-    byte->short->char-> int -> long -> float -> double
+      byte->short->char-> int -> long -> float -> double
 
 + 静态变量static在不同的实例中地址一样，在全局区。
 
@@ -99,13 +96,13 @@
     
     
   
-+ 用ClassLoader加载类，是不会导致类的初始化（也就是说不会执行<clinit>方法）.Class.forName(...)加载类，不但会将类加载，还会执行会执行类的初始化方法.
++ 用ClassLoader加载类，是不会导致类的初始化（也就是说不会执行**<clinit>**方法）.Class.forName(...)加载类，不但会将类加载，还会执行会执行类的初始化方法.
 
 + ArrayList<> 初始容量为10,每次扩容大小为之前的1.5倍
 
 + 接口中的属性在不提供修饰符修饰的情况下，会自动加上public static final
 
-+ java反射提供了：
++ java反射(Reflection)提供了：
 
   + **在运行时判断任意一个对象所属的类**
   + 在运行时构造任意一个类的对象
@@ -160,28 +157,26 @@
       
     + **新生代基本采用复制算法，老年代采用标记-清除算法。cms采用标记清理。**
     
-    + 1，新生代：（1）所有对象创建在新生代的Eden区，当Eden区满后触发新生代的Minor GC，将Eden区和非空闲Survivor区存活的对象复制到另外一个空闲的Survivor区中。（2）保证一个Survivor区是空的，新生代**Minor GC**就是在两个Survivor区之间相互复制存活对象，直到Survivor区满为止。
+      + 新生代：（1）所有对象创建在新生代的Eden区，当Eden区满后触发新生代的Minor GC，将Eden区和非空闲Survivor区存活的对象复制到另外一个空闲的Survivor区中。（2）保证一个Survivor区是空的，新生代**Minor GC**就是在两个Survivor区之间相互复制存活对象，直到Survivor区满为止。
+      + 老年代：当Survivor区也满了之后就通过**Minor GC**将对象复制到老年代。老年代也满了的话，就将触发**Full GC**(**Major GC**)，针对整个堆（包括新生代、老年代、持久代）进行垃圾回收。
+      + 持久代：持久代如果满了，将触发**Full GC**
     
-      2，老年代：当Survivor区也满了之后就通过**Minor GC**将对象复制到老年代。老年代也满了的话，就将触发**Full GC**(**Major GC**)，针对整个堆（包括新生代、老年代、持久代）进行垃圾回收。
-    
-      3，持久代：持久代如果满了，将触发**Full GC**
-      
     + 直接内存的分配不会受到Java堆大小的限制，但是会受到机器本身内存大小的限制，超过本机最大内存的时候还是会抛oom
     
   + off—heap:堆外内存
-
+  
     + 为了解决堆内内存过大带来的长时间的GC停顿的问题，以及操作系统对堆内内存不可知的问题，java虚拟机开辟出了堆外内存（off-heap memory）。堆外内存意味着把一些对象的实例分配在Java虚拟机堆内内存以外的内存区域，这些内存直接受操作系统（而不是虚拟机）管理。这样做的结果就是能保持一个较小的堆，以减少垃圾收集对应用的影响。同时因为这部分区域直接受操作系统的管理，别的进程和设备（例如GPU）可以直接通过操作系统对其进行访问，减少了从虚拟机中复制内存数据的过程。
 
   + 参数设置：
 
-    + java -Xmx3550m -Xms3550m -Xmn2g -Xss128k -XX:SurvivorRatio=4
-      +    -Xmx3550m:设置JVM最大可用内存为3550M. 
+    + java -Xmx3550m -Xms3550m -Xmn 10 m -Xss128k -XX:SurvivorRatio=6
+    +    -Xmx3550m:设置JVM最大可用内存为3550M. 
       + -Xms3550m:设置JVM促使内存为3550m.此值可以设置与-Xmx相同,以避免每次垃圾回收完成后JVM重新分配内存. 
       + -Xmn 2g:设置年轻代大小为2G.
       + -Xss128k:设置每个线程的堆栈大小. 
-      + -XX:SurvivorRatio=4:设置年轻代中Eden区与Survivor区的大小比值.设置为4,则两个Survivor区与一个Eden区的比值为2:4,一个Survivor区占整个年轻代的1/6
+      + -XX:SurvivorRatio=6:设置年轻代中Eden区与一个Survivor区的大小比值.设置为6,则总Survivor:Eden=2:6;一个Survivor区占整个年轻代的1/8=1.25;Eden区占3/4=7.5；
     + JVM 启动默认参数：-Xmx为物理内存的1/4，-Xms为物理内存的1/64，
-
+  
 + ThreadLocal:
   + ThreadLocal存放的值是线程封闭，线程间互斥的，主要用于线程内共享一些数据，避免通过参数来传递
   
@@ -244,14 +239,12 @@
 + init() 方法
     init 方法被设计成只调用一次。它在第一次创建 Servlet 时被调用，用于 Servlet的初始化，初始化的数据，可以在整个生命周期中使用。
   
-  + service() 方法
-    service() 方法是执行实际任务的主要方法。 Servlet 容器（Tomcat、Jetty等）调用 service() 方法来处理来自客户端（浏览器）的请求，并把相应结果返回给客户端。
-    每次 Servlet 容器接收到一个 Http 请求， Servlet 容器会产生一个新的线程并调用 Servlet实例的 service 方法。 service 方法会检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），并在适当的时候调用 doGet、doPost、doPut、doDelete 方法。所以，在编码请求处理逻辑的时候，我们只需要关注 doGet()、或doPost()的具体实现即可。
-    
-  + destroy() 方法
-    
-    destroy() 方法也只会被调用一次，在 Servlet 生命周期结束时调用。destroy() 方法主要用来清扫“战场”，执行如关闭数据库连接、释放资源等行为。
-    调用 destroy 方法之后，servlet 对象被标记为垃圾回收，等待 JVM 的垃圾回收器进行处理。
+  + service() 方法:
+    + service() 方法是执行实际任务的主要方法。 Servlet 容器（Tomcat、Jetty等）调用 service() 方法来处理来自客户端（浏览器）的请求，并把相应结果返回给客户端。
+      每次 Servlet 容器接收到一个 Http 请求， Servlet 容器会产生一个新的线程并调用 Servlet实例的 service 方法。 service 方法会检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），并在适当的时候调用 doGet、doPost、doPut、doDelete 方法。所以，在编码请求处理逻辑的时候，我们只需要关注 doGet()、或doPost()的具体实现即可。
+  + destroy() 方法:
+    + destroy() 方法也只会被调用一次，在 Servlet 生命周期结束时调用。destroy() 方法主要用来清扫“战场”，执行如关闭数据库连接、释放资源等行为。
+      调用 destroy 方法之后，servlet 对象被标记为垃圾回收，等待 JVM 的垃圾回收器进行处理。
   
 + 接口可以多继承
 
@@ -338,8 +331,11 @@
   + 由**数组+链表**组成的，基于**哈希表的Map**实现，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的。
   
   + TreeMap也支持<null,null>键值对
-    
   
++ Set：
+
+    + 允许有一个null
+
 + Socket:
 
     + 客户端通过new Socket()方法创建通信的Socket对象
@@ -554,6 +550,12 @@
 
 
 
++ StackOverflow和OutOfMemery:
+  - OutOfMemory:
+    - 对于一台服务器而言，每一个用户请求，都会产生一个线程来处理这个请求，每一个线程对应着一个栈，栈会分配内存，此时如果请求过多，这时候内存不够了，就会发生栈内存溢出。
+  - StackOverflow:
+    - 栈溢出是指不断的调用方法，不断的压栈，最终超出了栈允许的栈深度，就会发生栈溢出，比如递归操作没有终止，死循环。
+
 
 
 
@@ -623,13 +625,8 @@
 + Tomcat目录结构：
   
   + ![1571192788405](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571192788405.png)
-+ StackOverflow和OutOfMemery:
-  + OutOfMemory:
-    + 对于一台服务器而言，每一个用户请求，都会产生一个线程来处理这个请求，每一个线程对应着一个栈，栈会分配内存，此时如果请求过多，这时候内存不够了，就会发生栈内存溢出。
-  + StackOverflow:
-    + 栈溢出是指不断的调用方法，不断的压栈，最终超出了栈允许的栈深度，就会发生栈溢出，比如递归操作没有终止，死循环。
-
-
+  
+  
 
 
 
@@ -647,7 +644,7 @@
 
 ### 2.  Java 提供了哪几种线程池？他们各自的使用场景是什么？
 
-#### Java 主要提供了下面4种线程池
+#### Java 主要提供了下面4种线程池:
 
 - **FixedThreadPool：** 该方法返回一个固定线程数量的线程池。该线程池中的线程数量始终不变。当有一个新的任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，待有线程空闲时，便处理在任务队列中的任务。
 - **SingleThreadExecutor：** 方法返回一个只有一个线程的线程池。若多余一个任务被提交到该线程池，任务会被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。
