@@ -65,7 +65,7 @@
     + 子类的普通代码块
     + 子类的构造方法
 
-  + 编译期常量与运行期常量
+  + 静态常量
 
     ```java
     public class Nowcoder {
@@ -74,7 +74,7 @@
         }
     }
     class B{
-        static String a = new String("hello World"); //运行时常量
+        static String a = new String("hello World"); 
         static {
             System.out.println("This is static Code block");
         }
@@ -83,8 +83,20 @@
     	This is static Code block
     	hello World
     //----------------------------	
+    因为Random是需要随机函数计算的，在类的加载连接阶段无法进行极端，需要初始化后才能赋予准确的值	
     class B{
-        static final String a = "hello World"; //编译时常量
+        final static int a = new Random().nextInt() 
+        static {
+            System.out.println("This is static Code block");
+        }
+    }
+    output:
+    	This is static Code block
+    	883488612
+    	
+    //----------------------------	
+    class B{
+        static final String a = "hello World"; //在类加载的时候就已经对a初始化了，所以不会加载静态代码块
         static {
             System.out.println("This is static Code block");
         }
@@ -683,3 +695,6 @@ private static ExecutorService executor = new ThreadPoolExecutor(13, 13,
 ```
 
 这种情况下，一旦提交的线程数超过当前可用线程数时，就会抛出java.util.concurrent.RejectedExecutionException，这是因为当前线程池使用的队列是有边界队列，队列已经满了便无法继续处理新的请求。但是异常（Exception）总比发生错误（Error）要好。
+
+
+
