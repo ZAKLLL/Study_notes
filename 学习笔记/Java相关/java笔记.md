@@ -4,7 +4,7 @@
 + 创建一个文件夹
 
   ```java
-  private final static String uploadfilepath="E:"+File.separator;
+  nibiprivate final static String uploadfilepath="E:"+File.separator;
   static File files = new File(uploadfilepath+"file1");
   static {
       if (!files.exists()) {
