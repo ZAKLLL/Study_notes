@@ -1,8 +1,12 @@
-ls file 
+**ls file** 
 
 + 查看目录：ls   
 + 查看所有信息: ls -r
 + 查看文件基本类型（.后缀名）：file filenam
+
+### wc(查看文件信息)
+
++ ![image-20191128094335057](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20191128094335057.png)
 
 ### cd
 + 进入退出文件夹：cd
@@ -191,10 +195,13 @@ ls file
   
   
   
-  
-  
-  
-  
-  
+### AWK
 
- 
+​	
+
+### SED
+
+
+
+
+
