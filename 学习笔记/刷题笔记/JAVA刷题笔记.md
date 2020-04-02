@@ -144,7 +144,7 @@
 + 构造函数不能被继承，构造方法只能被显式(**super()**)或隐式的调用。
 
 + 反射获取方法：
-  + **getMethods()**返回某个类的所有公用（public）方法包括其继承类的公用方法，包括它所实现接口的方法。
+  + **getMethods()**返回某个类的所有**公用（public）方法包括其继承类的公用方法**，包括它所实现接口的方法。
   + **getDeclaredMethods()**对象表示的类或接口声明的所有方法，包括公共、保护、默认（包）访问和私有方法，但不包括继承的方法。包括它所实现接口的方法。
 
 + Jvm:
@@ -176,20 +176,34 @@
       
     + **新生代基本采用复制算法，老年代采用标记-清除算法。cms采用标记清理。**
     
-      + 新生代：（1）所有对象创建在新生代的Eden区，当Eden区满后触发新生代的Minor GC，将Eden区和非空闲Survivor区存活的对象复制到另外一个空闲的Survivor区中。（2）保证一个Survivor区是空的，新生代**Minor GC**就是在两个Survivor区之间相互复制存活对象，直到Survivor区满为止。
-      + 老年代：当Survivor区也满了之后就通过**Minor GC**将对象复制到老年代。老年代也满了的话，就将触发**Full GC**(**Major GC**)，针对整个堆（包括新生代、老年代、持久代）进行垃圾回收。
-      + 持久代：持久代如果满了，将触发**Full GC**
+      + **新生代**：
+        + 所有对象创建在新生代的Eden区，当Eden区满后触发新生代的Minor GC，将Eden区和非空闲Survivor区存活的对象复制到另外一个空闲的Survivor区中。
+        + 保证一个Survivor区是空的，新生代**Minor GC**就是在两个Survivor区之间相互复制存活对象，直到Survivor区满为止。
+      + **老年代**：当Survivor区也满了之后就通过**Minor GC**将对象复制到老年代。老年代也满了的话，就将触发**Full GC**(**Major GC**)，针对整个堆（包括新生代、老年代、持久代）进行垃圾回收。
+      + **持久代**：
+        + 类的方法(字节码...)
+        + 类名(Sring对象)
+      + .class文件读到的常量信息
+        + class对象相关的对象列表和类型列表 (e.g., 方法对象的array).
+      + JVM创建的内部对象
+        + JIT编译器优化用的信息
+        + 持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate 等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。持久代大小通过-XX:MaxPermSize=进行设置。
+          持久代补充：持久带也称为方法区
+          持久代如果满了，将触发**Full GC**
+        + JDK8中已经把持久代（PermGen Space） 干掉了，取而代之的元空间（Metaspace）。Metaspace占用的是本地内存，不再占用虚拟机内存。
+        + **为什么要用Metaspace替代方法区**
+          随着动态类加载的情况越来越多，这块内存变得不太可控，如果设置小了，系统运行过程中就容易出现内存溢出，设置大了又浪费内存。
     
     + 直接内存的分配不会受到Java堆大小的限制，但是会受到机器本身内存大小的限制，超过本机最大内存的时候还是会抛oom
     
   + off—heap:堆外内存
-
+  
     + 为了解决堆内内存过大带来的长时间的GC停顿的问题，以及操作系统对堆内内存不可知的问题，java虚拟机开辟出了堆外内存（off-heap memory）。堆外内存意味着把一些对象的实例分配在Java虚拟机堆内内存以外的内存区域，这些内存直接受操作系统（而不是虚拟机）管理。这样做的结果就是能保持一个较小的堆，以减少垃圾收集对应用的影响。同时因为这部分区域直接受操作系统的管理，别的进程和设备（例如GPU）可以直接通过操作系统对其进行访问，减少了从虚拟机中复制内存数据的过程。
-
+  
   + 参数设置：
   
     + java -Xmx3550m -Xms3550m -Xmn 10 m -Xss128k -XX:SurvivorRatio=6
-    +    -Xmx3550m:设置JVM最大可用内存为3550M. 
+      + -Xmx3550m:设置JVM最大可用内存为3550M. 
       + -Xms3550m:设置JVM促使内存为3550m.此值可以设置与-Xmx相同,以避免每次垃圾回收完成后JVM重新分配内存. 
       + -Xmn 2g:设置年轻代大小为2G.
       + -Xss128k:设置每个线程的堆栈大小. 
@@ -216,11 +230,14 @@
       > fi(key) = (f(key)+di) MOD m (di=1,2,3,......,m-1)
   
 + 引用：
+  
+  + ![image-20200321130121780](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200321130121780.png)
   + 1、强引用：一个对象赋给一个引用就是强引用，比如new一个对象，一个对象被赋值一个对象。
   + 2、软引用：用SoftReference类实现，一般不会轻易回收，只有内存不够才会回收。
-  + 3、弱引用：用WeakReference类实现，一旦垃圾回收已启动，就会回收。
++ 3、弱引用：用WeakReference类实现，一旦垃圾回收已启动，就会回收。
+  
   + 4、虚引用：不能单独存在，必须和引用队列联合使用。主要作用是跟踪对象被回收的状态
-
+  
 +   ``` i =  ++(i++);``` //编译不通过
 
 + 变量：
@@ -256,15 +273,18 @@
   + HttpServletRequest接口扩展ServletRequest接口，为HTTP Servlet提供HTTP请求信息
   
 + init() 方法
-    init 方法被设计成只调用一次。它在第一次创建 Servlet 时被调用，用于 Servlet的初始化，初始化的数据，可以在整个生命周期中使用。
+  init 方法被设计成只调用一次。它在第一次创建 Servlet 时被调用，用于 Servlet的初始化，初始化的数据，可以在整个生命周期中使用。
+
++ service() 方法:
+
+  + service() 方法是执行实际任务的主要方法。 Servlet 容器（Tomcat、Jetty等）调用 service() 方法来处理来自客户端（浏览器）的请求，并把相应结果返回给客户端。
+    **每次 Servlet 容器接收到一个 Http 请求， Servlet 容器会产生一个新的线程并调用 Servlet实例的 service 方法**。 service 方法会检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），并在适当的时候调用 doGet、doPost、doPut、doDelete 方法。所以，在编码请求处理逻辑的时候，我们只需要关注 doGet()、或doPost()的具体实现即可。
   
-  + service() 方法:
-    + service() 方法是执行实际任务的主要方法。 Servlet 容器（Tomcat、Jetty等）调用 service() 方法来处理来自客户端（浏览器）的请求，并把相应结果返回给客户端。
-      每次 Servlet 容器接收到一个 Http 请求， Servlet 容器会产生一个新的线程并调用 Servlet实例的 service 方法。 service 方法会检查 HTTP 请求类型（GET、POST、PUT、DELETE 等），并在适当的时候调用 doGet、doPost、doPut、doDelete 方法。所以，在编码请求处理逻辑的时候，我们只需要关注 doGet()、或doPost()的具体实现即可。
-  + destroy() 方法:
-    + destroy() 方法也只会被调用一次，在 Servlet 生命周期结束时调用。destroy() 方法主要用来清扫“战场”，执行如关闭数据库连接、释放资源等行为。
-      调用 destroy 方法之后，servlet 对象被标记为垃圾回收，等待 JVM 的垃圾回收器进行处理。
-  
++ destroy() 方法:
+
+  + destroy() 方法也只会被调用一次，在 Servlet 生命周期结束时调用。destroy() 方法主要用来清扫“战场”，执行如关闭数据库连接、释放资源等行为。
+    调用 destroy 方法之后，servlet 对象被标记为垃圾回收，等待 JVM 的垃圾回收器进行处理。
+
 + 接口可以多继承
 
 + Web应用程序中，Web容器负责将HTTP请求转换为HttpServletRequest对象
@@ -288,7 +308,7 @@
   + 2、Applet―Java小程序”不能独立运行（嵌入到Web页中）。由Java兼容浏览器控制执行。
   + 3、Serverlets是Java技术对CGI 编程的解决方案。是运行于Web server上的、作为来自于Web browse或其他HTTP client端的请求和在server上的数据库及其他应用程序之间的中间层程序。
 
-+ Condition: Condition是在java 1.5中才出现的，它用来替代传统的Object的wait()、notify()实现线程间的协作，相比使用Object的wait()、notify()，使用Condition1的await()、signal()这种方式实现线程间协作更加安全和高效。
++ Condition: Condition是在java 1.5中才出现的，它用来替代传统的Object的wait()、notify()实现线程间的协作，相比使用Object的wait()、notify()，使用Condition的await()、signal()这种方式实现线程间协作更加安全和高效。
 
 + java CallableStatement ,PreparedStatement继承关系图
   
@@ -359,8 +379,7 @@
 
     + 客户端通过new Socket()方法创建通信的Socket对象
         服务器端通过new ServerSocket()创建TCP连接对象  accept接纳客户端请求
-        
-
+    
 + orm框架与对象数据模型对应关系：
   + 表对应类
   + 记录对应对象
@@ -381,6 +400,8 @@
     + **如果两个对象equals，那么它们的hashCode必然相等**
 
     + **但是hashCode相等，equals不一定相等。**
+    
+    + 为什么重写equals方法就得重写hashCode方法”已经结束了，它的答案是“**因为必须保证重写后的equals方法认定相同的两个对象拥有相同的哈希值**”。同时我们顺便得出了一个结论：“**hashCode方法的重写原则就是保证equals方法认定为相同的两个对象拥有相同的哈希值**”。
     
     + 重写Equals原则：
     
