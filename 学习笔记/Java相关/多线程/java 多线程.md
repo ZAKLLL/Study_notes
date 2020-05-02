@@ -2,8 +2,8 @@
 
 ### 生命周期
 
-+ ![1556846189358](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1556846189358.png)
-+ ![1568083082315](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568083082315.png)
++ ![1556846189358](../../../images/1556846189358.png)
++ ![1568083082315](../../../images/1568083082315.png)
 
 ```java
 Thread t1 = new Thread(new Runnable() {
@@ -39,7 +39,7 @@ main
 
 ### 创建一个线程
 
-![1557022605290](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1557022605290.png)
+![1557022605290](../../../images/1557022605290.png)
 
 1. 创建一个线程默认具有线程名Thread-i(i代表创建的第几个线程)
 
@@ -655,7 +655,7 @@ main
   
   ```
 
-![1557472617634](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1557472617634.png)
+![1557472617634](../../../images/1557472617634.png)
 
 
 

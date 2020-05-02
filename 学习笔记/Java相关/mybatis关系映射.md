@@ -164,7 +164,7 @@
 
 
 
-  ​	![1545488294531](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1545488294531.png)
+  ​	![1545488294531](../../images/1545488294531.png)
 
   ​	三个pojo类
 

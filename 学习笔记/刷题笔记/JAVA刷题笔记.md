@@ -149,9 +149,9 @@
 
 + Jvm:
 
-  + ![1555745612053](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1555745612053.png)
+  + ![1555745612053](../../images/1555745612053.png)
 
-  + ![1568274352276](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568274352276.png)
+  + ![1568274352276](../../images/1568274352276.png)
 
   + 1、**堆区（heap）**：用于存放所有对象，是线程共享的（注：数组也属于对象）
 
@@ -231,7 +231,7 @@
   
 + 引用：
   
-  + ![image-20200321130121780](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200321130121780.png)
+  + ![image-20200321130121780](../../images/image-20200321130121780.png)
   + 1、强引用：一个对象赋给一个引用就是强引用，比如new一个对象，一个对象被赋值一个对象。
   + 2、软引用：用SoftReference类实现，一般不会轻易回收，只有内存不够才会回收。
 + 3、弱引用：用WeakReference类实现，一旦垃圾回收已启动，就会回收。
@@ -242,7 +242,7 @@
 
 + 变量：
   
-  + ![1567404024665](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567404024665.png)
+  + ![1567404024665](../../images/1567404024665.png)
 
 + 线程安全的集合
   + ArrayList线程不安全，Vector线程安全；
@@ -265,7 +265,7 @@
 
 + Servlet：
   
-  + ![1567421145720](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567421145720.png)
+  + ![1567421145720](../../images/1567421145720.png)
   + GenericServlet类：抽象类，定义一个通用的、独立于底层协议的Servlet。
   + 大多数Servlet通过从GenericServlet或HttpServlet类进行扩展来实现
   + 抽象类httpServlet,专门用于创建应用于HTTP协议的Servletd
@@ -299,7 +299,7 @@
 
   + 4.非检查异常(编译器不要求处置的异常):包括运行时异常（RuntimeException与其子类）和错误（Error）。
 
-  + ![1567512468777](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567512468777.png)
+  + ![1567512468777](../../images/1567512468777.png)
 
     
 
@@ -312,7 +312,7 @@
 
 + java CallableStatement ,PreparedStatement继承关系图
   
-+ ![1567668851234](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567668851234.png)
++ ![1567668851234](../../images/1567668851234.png)
   
   + 具体使用示例：
     
@@ -393,7 +393,7 @@
 
 + java基本数据类型(原生类)：
 
-    + ![1567822655223](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1567822655223.png)
+    + ![1567822655223](../../images/1567822655223.png)
 
 + HashCode和Equals:
 
@@ -512,7 +512,7 @@
 
 + Java内部类：
   
-+ ![1568206648653](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1568206648653.png)
++ ![1568206648653](../../images/1568206648653.png)
   
     + **1. 静态内部类：**
     
@@ -613,7 +613,7 @@
     3.  不剥夺条件:进程已获得的资源，在末使用完之前，不能强行剥夺。
     4.  循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。
 
-  + 死锁怎么产生的：![1571066286602](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571066286602.png)
+  + 死锁怎么产生的：![1571066286602](../../images/1571066286602.png)
 
   + ```java
     public static void main(String[] args) {
@@ -664,7 +664,7 @@
 
 + Tomcat目录结构：
   
-  + ![1571192788405](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1571192788405.png)
+  + ![1571192788405](../../images/1571192788405.png)
   
   
 

@@ -44,7 +44,7 @@
 + Spring 的scope作用域：
 
   +  在没有设值注入的	情况下才会根据配置文件中的构造注入，一旦有设值注入，则构造注入失效
-  + ![1569398227237](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1569398227237.png)
+  + ![1569398227237](../../images/1569398227237.png)
 
 + Spring DI的两种方式：
 

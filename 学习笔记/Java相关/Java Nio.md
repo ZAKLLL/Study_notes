@@ -10,15 +10,15 @@
 
 + Nio结构模型
 
-  ![1554441773422](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1554441773422.png)
+  ![1554441773422](../../images/1554441773422.png)
 
 + Channel与Buffer的关系
 
-  ![1554441824184](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1554441824184.png)
+  ![1554441824184](../../images/1554441824184.png)
 
 + Selector:
 
-  ![1554604133948](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1554604133948.png)
+  ![1554604133948](../../images/1554604133948.png)
 
   
 
@@ -112,7 +112,7 @@
 1. capacity:构建Buffer时进行初始化，全局不可变。
 2. position: 永远指向下一个读或者写的元素索引。
 3. limit:默认位置为capacity的值，当调用flip()时，limit位置指向方法调用前的position位置。
-4. ![1554450906686](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1554450906686.png)
+4. ![1554450906686](../../images/1554450906686.png)
 
 + flip()使得buffer由可写变成可读状态，limit=position,position=0 
 + clear()使得变成可写状态，limit=capacity,position=0
@@ -198,7 +198,7 @@ public class NioTest11 {
     SelectionKey.OP_WRITE   //写入就绪
     ```
 
-    ![1554723986188](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1554723986188.png)
+    ![1554723986188](../../images/1554723986188.png)
 
   + 注册Channel到Selector
 

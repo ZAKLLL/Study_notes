@@ -6,7 +6,7 @@
 
 ### wc(查看文件信息)
 
-+ ![image-20191128094335057](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\image-20191128094335057.png)
++ ![image-20191128094335057](../../images/image-20191128094335057.png)
 
 ### cd
 + 进入退出文件夹：cd

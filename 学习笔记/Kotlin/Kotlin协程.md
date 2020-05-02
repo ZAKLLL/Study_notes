@@ -49,7 +49,7 @@
       }
       ```
 
-      ![1555549895805](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1555549895805.png)
+      ![1555549895805](../../images/1555549895805.png)
 
 2. 协程的结束cancel()
 

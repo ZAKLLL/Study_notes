@@ -239,9 +239,9 @@ public class JsonController2 {
 
 使用自定义json发送数据是浏览器信息为：
 
-![1546321715426](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1546321751402.png)
+![1546321715426](../images/1546321751402.png)
 
-使用表单提交数据是浏览器信息为![1546321832056](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1546321875174.png)
+使用表单提交数据是浏览器信息为![1546321832056](../images/1546321875174.png)
 
 
 

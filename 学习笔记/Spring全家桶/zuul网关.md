@@ -1,4 +1,4 @@
-![1550749456423](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1550749456423.png)
+![1550749456423](../../images/1550749456423.png)
 
 
 

@@ -44,9 +44,9 @@
 
    6. watch:监控计算属性，异步计算时使用
 
-      1. ![1551060744842](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1551060744842.png)
+      1. ![1551060744842](../../images/1551060744842.png)
 
-   7. ![1551065136964](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1551065136964.png)
+   7. ![1551065136964](../../images/1551065136964.png)
 
    8. 父组件向子组件传递信息：
 

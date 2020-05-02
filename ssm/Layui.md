@@ -2,7 +2,7 @@
 
 1. 导入layui框架放置与webapp下的static文件夹
 
-   ![1546267292054](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1546267292054.png)
+   ![1546267292054](../images/1546267292054.png)
 
 2. 改变layui原有布局中的css和js文件引入地址：
 

@@ -2,7 +2,7 @@
 
 ## 项目结构图
 
-![1546531429510](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1546531429510.png)
+![1546531429510](../../images/1546531429510.png)
 
 #### 所需依赖
 

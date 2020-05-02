@@ -56,7 +56,7 @@ main.js:
   
 + 项目结构目录
 
-+ ![1557977465738](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1557977465738.png)
++ ![1557977465738](../../images/1557977465738.png)
 
 + 将src下的main.js 打包到dist中的bundle.js
 
@@ -184,4 +184,4 @@ main.js:
 
     + `npm i vue-loader vue-template-compiler -D`
 
-+ ![1558076457023](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558076457023.png)
++ ![1558076457023](../../images/1558076457023.png)

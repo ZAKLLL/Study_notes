@@ -206,7 +206,7 @@
 
 10. **ForkJoin**
 
-    1. ![1572399149083](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1572399149083.png)
+    1. ![1572399149083](../../../images/1572399149083.png)
 
     2. 分而治之递归思想，将大的任务分解成满足条件的小任务进行执行，充分利用CPU计算资源：
 

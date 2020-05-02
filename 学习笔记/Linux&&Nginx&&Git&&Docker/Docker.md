@@ -12,7 +12,7 @@
     + 容器提供了程序的运行环境，把Image运行起来，就是一个容器。runtime时环境
 + Docker的安装
 
-![1558494038894](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558494038894.png)
+![1558494038894](../../images/1558494038894.png)
 
 + Docker速度快的原因:
   
@@ -57,7 +57,7 @@
 + 带端口映射的启动：docker run -it -p 8888:8080 <ImageId> ： 将docker 对外暴露的端口为8888，对应容器的端口 8080
 + 带端口映射的启动:   docker run -it -P  <imageId> : 随机映射端口
 
-![1558576073943](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558576073943.png)
+![1558576073943](../../images/1558576073943.png)
 
 + 退出容器：
   + exit ：退出容器并且停止容器
@@ -78,7 +78,7 @@
     + docker cp <containerId>:/../...(docker容器里的文件)  /.../(宿主机文件目录)  ： 将docker容器中的文件拷贝到宿主机指定的目录下  
 + docker run it -v /宿主机绝对路径目录 :/容器内目录  <ImageName> :容器和宿主机数据互通:
   + 可以添加--privileged=true 来增加权限
-  + ![1558603374582](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558603374582.png)
+  + ![1558603374582](../../images/1558603374582.png)
   + docker run it -v /宿主机绝对路径目录 :/容器内目录 :ro <ImageName> ： 容器内不可写入数据
 
 ## DockerFile:
@@ -155,11 +155,11 @@
 
 + Docker 运行mysql镜像并且与宿主机共享数据：
 
-  + ![1558772897885](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558772897885.png)
+  + ![1558772897885](../../images/1558772897885.png)
 
   + 与mysql 进行交互：
 
-  + ![1558773108647](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1558773108647.png)
+  + ![1558773108647](../../images/1558773108647.png)
 
     
 

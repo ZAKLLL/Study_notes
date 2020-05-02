@@ -178,15 +178,15 @@ server:
 
     消费者中配置
 
-    ![1548765387067](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1548765387067.png)
+    ![1548765387067](../../images/1548765387067.png)
 
   ​	
 
   + 重试机制：
-  + ![1548766576376](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1548766576376.png)
+  + ![1548766576376](../../images/1548766576376.png)
     + 消费者中配置：
-    + ![1548766330645](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1548766330645.png)
+    + ![1548766330645](../../images/1548766330645.png)
   + 熔断机制：
-    + 启动类配置：![1548768485475](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1548768485475.png)
+    + 启动类配置：![1548768485475](../../images/1548768485475.png)
   + 熔断机制与重试机制的优化：
-    + ![1548769242174](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1548769242174.png)
+    + ![1548769242174](../../images/1548769242174.png)

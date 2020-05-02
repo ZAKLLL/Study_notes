@@ -250,9 +250,9 @@ Kotlin
 
    常用操作符
 
-   ![1555331596918](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1555331596918.png)
+   ![1555331596918](../../images/1555331596918.png)
 
-   ![1555331673735](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1555331673735.png)
+   ![1555331673735](../../images/1555331673735.png)
 
 10. Lambda闭包
 
@@ -387,7 +387,7 @@ Kotlin
 
 14. 比较是否相等
 
-    ![1555404793213](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1555404793213.png)
+    ![1555404793213](../../images/1555404793213.png)
 
 15. 集合
 

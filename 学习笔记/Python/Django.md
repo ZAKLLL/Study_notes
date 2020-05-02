@@ -86,7 +86,7 @@
 
   + 在templates文件夹中新建文件名polls:
 
-    + ![1560861270715](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1560861270715.png)
+    + ![1560861270715](../../images/1560861270715.png)
 
   + ```python
     from django.http import HttpResponse

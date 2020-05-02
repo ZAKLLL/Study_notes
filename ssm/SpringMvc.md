@@ -2,7 +2,7 @@ SpringMVC
 
 + **SpringMVC结构图**
 
-  ![1545546821865](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1545546821865.png)
+  ![1545546821865](../images/1545546821865.png)
 
 1. 创建webproject
 
@@ -10,7 +10,7 @@ SpringMVC
 
       项目结构图：
 
-      ![1545531860484](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1545531860484.png)
+      ![1545531860484](../images/1545531860484.png)
 
 2. 编写web.xml，在其中注册一个特殊的servlet,前端控制器,字符乱码问题
 
@@ -155,7 +155,7 @@ public class ByeController {
 
 ### Springmvc-servlet.xml配置位置：
 
-​	DispatcerSerlvet默认查找web-inf下的springmvc-servlet.xml文件![1545534957535](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1545534957535.png)
+​	DispatcerSerlvet默认查找web-inf下的springmvc-servlet.xml文件![1545534957535](../images/1545534957535.png)
 
 可以通过<init-param>标签更改位置满足maven项目式结构开发：
 
@@ -503,7 +503,7 @@ public String T(String name,String password,Model model){
 
 + 方式二 利用@requestparam
 
-![1546138065783](C:\Users\HP\AppData\Roaming\Typora\typora-user-images\1546138065783.png)
+![1546138065783](../images/1546138065783.png)
 
 
 
