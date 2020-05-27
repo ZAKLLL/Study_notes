@@ -83,7 +83,7 @@
     	This is static Code block
     	hello World
     //----------------------------	
-    因为Random是需要随机函数计算的，在类的加载连接阶段无法进行极端，需要初始化后才能赋予准确的值	
+    //因为Random是需要随机函数计算的，在类的加载连接阶段无法进行计算，需要初始化后才能赋予准确的值	
     class B{
         final static int a = new Random().nextInt() 
         static {
@@ -96,7 +96,7 @@
     	
     //----------------------------	
     class B{
-    	 final static String a = "hello World"; //在类加载的时候就已经对a初始化了，所以不会加载静态代码块
+    	 final static String a = "hello World"; //在类加载的时候就已经对a初始化了并且放置在B类的常量池中，调用a的时候没有对B类进行直接使用。所以不会加载静态代码块
         static {
             System.out.println("This is static Code block");
         }
