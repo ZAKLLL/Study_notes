@@ -8,6 +8,12 @@
   f = open("test.txt"，'wb') #open 是打开创建/函数 'wb'是以二进制方式写入
   ```
 
++ 字符与ascall转换：
+  + 字符转ascall码：ord('a')
+  + acall码转字符：chr(97)
+
+
+
 ## Python&Mongodb
 
 + 连接数据库

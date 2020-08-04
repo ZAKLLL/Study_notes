@@ -1,4 +1,4 @@
-# netty
+# NETTY
 
 + websocket协议：ws://server:port/content_path
 
@@ -121,4 +121,34 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
 
 }
 ```
+
++ 服务端心跳检测：
+
+  + 如果设备断网或者断电后，channelInactive并不会被触发,则需要服务端主动进行监控客户端连接
+
+  + 使用redis解决：
+
+    + 使用redis来实现，每次设备发起心跳，server就更新一次redis，当设备断网超过一定时间，则redis中数据失效。这时候就认为设备失联，可以发送告警。
+       每次server重启，从数据库中读取所有设备号，然后储存在内存中，同时启动一个线程，定时根据设备号去redis中获取数据，如果有，则认为设备在线，如果没有，则设备失联。
+
+  + 使用IdleStateHandler:
+
+    + dleStateHandler中的三个参数解释如下：
+
+      1. readerIdleTime：为读超时时间；
+
+      2. writerIdleTime：为写超时时间；
+
+      3. allIdleTime：所有类型的超时时间；
+
+          这里最重要是的readerIdleTime，当设置了readerIdleTime以后，服务端server会每隔readerIdleTime时间去检查一次channelRead方法被调用的情况，如果在readerIdleTime时间内该channel上的channelRead()方法没有被触发，就会调用userEventTriggered方法。
+
+
+
+
+
++ **handle**r和**childHandler:**
+  + handler在初始化时就会执行，而childHandler会在客户端成功connect后才执行，这是两者的区别。
+
+### ChannelPipeline调用链
 

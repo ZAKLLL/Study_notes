@@ -45,14 +45,28 @@
   + docker rmi  -f  $(docker images -q) 
 + 启动：
   + 交互式启动：docker run -it <ImageId>  :启动一个伪终端进入到对应启动的docker容器中（一般是系统镜像）
+  
   + 后台运行容器： docker run -d <ImageId> ：返回一个运行的ContainerID
+  
   + 添加别名启动： docker run -it --name  <name> <ImageId> 
+  
   + 重启容器： docker restart <containerID>
+  
   + 查看所有的启动的docker 进程： docker ps
+  
   + 查看上一个容器实例：docker ps -l
-  + 查看当前运行的容器实例以及之前所有运行过的容器：docker ps -a
+  
+  + 查看当前运行的容器实例以及之前所有运行过的容器：docker ps -a 
+  
+    + ```bash
+      #不省略信息的查看方法
+      docker ps -a --no-trunc
+      ```
+  
   + 查看正在运行的容器的id: docker ps -q
+  
   + 查看所有的容器id: docker ps -aq
+  
   + 关闭所有容器：docker stop $(docker ps -aq)
 + 带端口映射的启动：docker run -it -p 8888:8080 <ImageId> ： 将docker 对外暴露的端口为8888，对应容器的端口 8080
 + 带端口映射的启动:   docker run -it -P  <imageId> : 随机映射端口
