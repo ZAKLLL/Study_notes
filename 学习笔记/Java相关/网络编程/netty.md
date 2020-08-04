@@ -148,7 +148,7 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
 
 
 + **handle**r和**childHandler:**
-  + handler在初始化时就会执行，而childHandler会在客户端成功connect后才执行，这是两者的区别。
+  + handler在**初始化时**就会执行，而**childHandler**会在客户端成功connect后才执行，这是两者的区别。
 
 ### ChannelPipeline调用链
 
