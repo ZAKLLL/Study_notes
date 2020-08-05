@@ -76,7 +76,16 @@
 
 + netstat -tnlp | grep :808* ：同上
 
-### 终止进ss -lntpd | grep :22程：
++ 根据进程pid查端口：          lsof -i | grep pid     
+
++ 根据端口port查进程：     lsof  -i:port          
+
++ 根据进程pid查端口：        netstat -nap | grep pid     
+
++ 根据端口port查进程        netstat -nap | grep port
+
+### 终止进程：
+
 + 终止进程: kill -9[pid]    直接终止进程
 + 退出进程： kill  [pid]   让进程正常退出，相当于 kill -15  [pid]
 
@@ -153,12 +162,17 @@
 ## java
 
 + 查看java相关的后台 jps
-
 + 后台运行    nohup java -jar superboot.jar &
-
++ 后台运行并且重定向日志  nohup command >>my.log 2>&1  & 
+  + 其中2>&1 表示将标准错误重定向到标准输出，当command指令出现问题的时候,运行错误内容会输出到my.log中
 + tail -f  用于监视file文件的增长
 
-  
+## 软连接
++ 将python3软连接到pyton 
+
+  ```bash
+  sudo ln -s /usr/bin/python3 /usr/bin/python
+  ```
 ## 管道符 |
 
 + ps -ef | grep <args> : 将查询到的所有的进程传递到grep命令中，进行匹配查询
@@ -201,6 +215,17 @@
 ​	
 
 ### SED
+
+### 防火墙(centos7 ):
+
+1. firewalld的基本使用
+2. 启动： systemctl start firewalld
+3. 关闭： systemctl stop firewalld
+4. 查看状态： systemctl status firewalld 
+5. 开机禁用 ： systemctl disable firewalld
+6. 开机启用 ： systemctl enable firewalld
+
+
 
 
 
