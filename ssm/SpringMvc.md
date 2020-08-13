@@ -557,3 +557,10 @@ public String MA(User user){
     }
     ```
 
++ 时间参数传递：
+
+  + ```java
+    public Result test(@RequestParam("startDate") @DateTimeFormat(pattern="yyyy/MM/dd") Date startDate,@RequestParam("endDate") @DateTimeFormat(pattern="yyyy/MM/dd") Date endDate){
+        return null;
+    }
+    ```

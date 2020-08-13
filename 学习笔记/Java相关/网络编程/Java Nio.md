@@ -2,23 +2,23 @@
 
 + java nio中有三个核心概念，Selector,Channel，Buffer，在Nio中，我们是面向块（block)或者缓冲区（buffer)编程。Buffer本身是一块内存，底层实际就是数组，数据的读写，都是通过Buffer来实现的。
 
-+ Buffer:提供了对于数据的结构化访问方式，并且可以追踪到系统的读写过程。在java中，七种原生数据类型都有各自的Buffer类型，如IntBuffer,LongBuffer,ByteBuffer...**Buffer使用flip()方法来改变读写状态**
++ **Buffer**:提供了对于数据的结构化访问方式，并且可以追踪到系统的读写过程。在java中，七种原生数据类型都有各自的Buffer类型，如**IntBuffer,LongBuffer,ByteBuffer...** **Buffer使用flip()方法来改变读写状态**
 
-+ Channel:可以向其中写入或是从中读取数据的对象，类似于java.io中的Stream。所有的Channel的数据读写都是通过Buffer来进行的，永远不能直接向Channel直接读取对象或者直接写入对象。
++ **Channel**:可以向其中写入或是从中读取数据的对象，类似于java.io中的Stream。所有的Channel的数据读写都是通过Buffer来进行的，永远不能直接向Channel直接读取对象或者直接写入对象。
 
-+ Selector:**Selector** 一般称 为**选择器** ，当然你也可以翻译为 **多路复用器** 。它是Java NIO核心组件中的一个，用于检查一个或多个NIO Channel（通道）的状态是否处于可读、可写。如此可以实现单线程管理多个channels,也就是可以管理多个网络链接。
++ **Selector**:**Selector** 一般称 为**选择器** ，当然你也可以翻译为 **多路复用器** 。它是Java NIO核心组件中的一个，用于检查一个或多个NIO Channel（通道）的状态是否处于可读、可写。如此可以实现单线程管理多个channels,也就是可以管理多个网络链接。
 
 + Nio结构模型
 
-  ![1554441773422](../../images/1554441773422.png)
+  ![1554441773422](../../../images/1554441773422.png)
 
 + Channel与Buffer的关系
 
-  ![1554441824184](../../images/1554441824184.png)
+  ![1554441824184](../../../images/1554441824184.png)
 
 + Selector:
 
-  ![1554604133948](../../images/1554604133948.png)
+  ![1554604133948](../../../images/1554604133948.png)
 
   
 
@@ -112,7 +112,7 @@
 1. capacity:构建Buffer时进行初始化，全局不可变。
 2. position: 永远指向下一个读或者写的元素索引。
 3. limit:默认位置为capacity的值，当调用flip()时，limit位置指向方法调用前的position位置。
-4. ![1554450906686](../../images/1554450906686.png)
+4. ![1554450906686](../../../images/1554450906686.png)
 
 + flip()使得buffer由可写变成可读状态，limit=position,position=0 
 + clear()使得变成可写状态，limit=capacity,position=0
@@ -198,7 +198,7 @@ public class NioTest11 {
     SelectionKey.OP_WRITE   //写入就绪
     ```
 
-    ![1554723986188](../../images/1554723986188.png)
+    ![1554723986188](../../../images/1554723986188.png)
 
   + 注册Channel到Selector
 
