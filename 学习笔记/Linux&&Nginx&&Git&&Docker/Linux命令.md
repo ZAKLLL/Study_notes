@@ -194,7 +194,7 @@
 
 + free -m/g  查看内存
 
-+ dh :
++ df :
 
   + df -hl 查看磁盘剩余空间
   
@@ -224,8 +224,10 @@
 4. 查看状态： systemctl status firewalld 
 5. 开机禁用 ： systemctl disable firewalld
 6. 开机启用 ： systemctl enable firewalld
-
-
+7. 开放端口： firewall-cmd --zone=public --add-port=5672/tcp --permanent  （开放5672端口，tcp协议
+8. 关闭端口： firewall-cmd --zone=public --remove-port=5672/tcp --permanent （关闭5672端口
+9. 刷新配置： firewall-cmd --reload 
+10. 查看防火墙所有开放的端口 firewall-cmd --zone=public --list-ports
 
 ### other
 
@@ -241,11 +243,17 @@
    echo “内容” > filename	将内容追加到文件末尾
    ```
 
-   
 
 
 
+### 抓包
+
++ UDP端口抓包: tcpdump -i eth0 -s 0 port 1814
+
++ UDP发包测试：nc -vuz 120.78.203.41 5060
 
 
 
+-----
 
+![image-20200814170941878](image-20200814170941878.png)

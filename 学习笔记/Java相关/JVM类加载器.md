@@ -164,7 +164,7 @@ protected ClassLoader(String name, ClassLoader parent);
 
 ## **Class.forName vs ClassLoader.loadClass**
 
-这两个方法都可以用来加载目标类，它们之间有一个小小的区别，那就是 Class.forName() 方法可以获取原生类型的 Class，而 ClassLoader.loadClass() 则会报错。
+这两个方法都可以用来加载目标类，它们之间有一个小小的区别，那就是 Class.forName() 方法可以获取原生类型的 Class，而 ClassLoader.loadClass() 则会报错，需要使用类的全限定名进行加载(com.xx.xx.xx.class)。
 
 ```java
 Class<?> x = Class.forName("ClassA"); //会执行static代码块 初始化static变量
