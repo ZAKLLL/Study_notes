@@ -84,6 +84,143 @@
 ### ClassLoader
 
 + 数组类型的对象加载是在运行时被classloader动态创建生成的
+
 + 如果数组中的对象是原生数据类型(int,long...) ,则改对象的classloade为null
+
 + 自定义类加载器通过拓展类加载器来拓展JVM动态加载类的能力(通过双亲委托机制)
+
 + 类加载器通常会被安全管理器所使用来确保类加载过程的安全。
+
++ 类加载器的命名空间：
+
+  + ![image-20200901224210104](image-20200901224210104.png)
+
++ 自定义类加载器与双亲委托机制:
+
+  + ```java
+    package com.zakl;
+    
+    import java.io.*;
+    import java.lang.reflect.InvocationTargetException;
+    
+    public class MyClassLoader extends ClassLoader {
+        private String classLoaderName;
+    
+        private String path;
+        private final String fileExtension = ".class";
+    
+    
+        public MyClassLoader(String classLoaderName) {
+            super();
+            this.classLoaderName = classLoaderName;
+        }
+    
+        public MyClassLoader(ClassLoader parent, String classLoaderName) {
+            super(parent);
+            this.classLoaderName = classLoaderName;
+        }
+    
+    
+        @Override
+        protected Class<?> findClass(String name) {
+            System.out.printf("%s loaded by %s \n", name, classLoaderName);
+            byte[] bytes = this.loadClassData(name);
+            return defineClass(name, bytes, 0, bytes.length);
+        }
+    
+        private byte[] loadClassData(String className) {
+            InputStream is = null;
+            byte[] data = null;
+            ByteArrayOutputStream baos = null;
+    
+            try {
+                className = className.replace(".", "//");
+                is = new FileInputStream(new File(this.path + className + this.fileExtension));
+                baos = new ByteArrayOutputStream();
+                int ch;
+                while (-1 != (ch = is.read())) {
+                    baos.write(ch);
+                }
+                data = baos.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                    baos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+    
+            }
+            return data;
+        }
+    
+        @Override
+        public String toString() {
+            return "MyClassLoader{" +
+                    "classLoaderName='" + classLoaderName + '\'' +
+                    ", fileExtension='" + fileExtension + '\'' +
+                    '}';
+        }
+    
+        public void setPath(String path) {
+            this.path = path;
+        }
+    
+        public static void test(ClassLoader classLoader) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+            Class<?> c = classLoader.loadClass("com.zakl.Main");
+            Object o = c.getDeclaredConstructor().newInstance();
+            System.out.println(o);
+            System.out.println(o.getClass().getClassLoader());
+        }
+    
+        public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            MyClassLoader loader1 = new MyClassLoader("myClassLoader1");
+            loader1.setPath("C:\\Users\\Administrator\\Desktop\\");
+            test(loader1);
+            System.out.println();
+            /*---------------使用loader1作为loader2的夫加载器------------------*/
+            /*---------------loader1是loader2的父加载器,根据双亲委托模型,目标类会被loader2的父类加载，即loader1,因为类被loader1加载过一次,所以直接从loader1中取出已经被加载的Main.class就好*/
+            MyClassLoader loader2 = new MyClassLoader(loader1, "myClassLoader2");
+            loader2.setPath("C:\\Users\\Administrator\\Desktop\\");
+            test(loader2);
+            System.out.println();
+    
+            /*---------------不同命名空间的类加载器-----------------*/
+    
+            MyClassLoader loader3 = new MyClassLoader("myClassLoader3");
+            loader3.setPath("C:\\Users\\Administrator\\Desktop\\");
+            test(loader3);
+        }
+    }
+    //保留代码接口，即原编译位置的Main.class(D:\Projects\Jvm_letter\out\production\Jvm_letter\com\zakl\Main.class)
+    //运行代码输出结果为:
+    com.zakl.Main@2f4d3709
+    jdk.internal.loader.ClassLoaders$AppClassLoader@3fee733d
+    
+    com.zakl.Main@1d81eb93
+    jdk.internal.loader.ClassLoaders$AppClassLoader@3fee733d
+    
+    com.zakl.Main@34a245ab
+    jdk.internal.loader.ClassLoaders$AppClassLoader@3fee733d
+    以上结果是因为双亲委托机制,都交给了父类,所以是加载了一次
+        
+    //使用自定义类加载加载的情况以及,主动设置夫加载器
+    //运行代码输出结果为:
+    com.zakl.Main loaded by myClassLoader1 
+    com.zakl.Main@37bba400
+    MyClassLoader{classLoaderName='myClassLoader1', fileExtension='.class'}
+    
+    com.zakl.Main@31cefde0
+    MyClassLoader{classLoaderName='myClassLoader1', fileExtension='.class'}
+    
+    com.zakl.Main loaded by myClassLoader3 
+    com.zakl.Main@17f052a3
+    MyClassLoader{classLoaderName='myClassLoader3', fileExtension='.class'}
+    
+    
+    ```
+
+  + 
+
