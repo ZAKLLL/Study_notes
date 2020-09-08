@@ -6,7 +6,7 @@
 
 
 
--XX:+TraceClassLoading
+-XX:+TraceClassLoading :表示监控类的加载
 
 
 

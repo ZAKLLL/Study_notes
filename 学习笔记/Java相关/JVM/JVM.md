@@ -180,7 +180,7 @@
             loader1.setPath("C:\\Users\\Administrator\\Desktop\\");
             test(loader1);
             System.out.println();
-            /*---------------使用loader1作为loader2的夫加载器------------------*/
+            /*---------------使用loader1作为loader2的父加载器------------------*/
             /*---------------loader1是loader2的父加载器,根据双亲委托模型,目标类会被loader2的父类加载，即loader1,因为类被loader1加载过一次,所以直接从loader1中取出已经被加载的Main.class就好*/
             MyClassLoader loader2 = new MyClassLoader(loader1, "myClassLoader2");
             loader2.setPath("C:\\Users\\Administrator\\Desktop\\");
@@ -206,7 +206,7 @@
     jdk.internal.loader.ClassLoaders$AppClassLoader@3fee733d
     以上结果是因为双亲委托机制,都交给了父类,所以是加载了一次
         
-    //使用自定义类加载加载的情况以及,主动设置夫加载器
+    //使用自定义类加载加载的情况以及,主动设置父类加载器，加载的代码位置为C:\\Users\\Administrator\\Desktop\\com\\zakl\\Main.class
     //运行代码输出结果为:
     com.zakl.Main loaded by myClassLoader1 
     com.zakl.Main@37bba400
@@ -221,6 +221,14 @@
     
     
     ```
+    
+  + ![image-20200903232523009](image-20200903232523009.png)
 
-  + 
++ 类的卸载：
 
+  + 当类被加载,连接和初始化后,它的生命周期就开始了.当代表类的class对象不在被引用，即不可触及时,类对象就会结束生命周期，类在方法去中的数据也会被卸载，从而结束类的生命周期。
+  + 一个类合适结束生命周期，取决于代表它的Class对象何时结束生命周期.
+  + 不可被卸载的类:由java虚拟机自带的类加载器(根加载器/扩展类加载器/系统类加载器)所加载的类，在虚拟机的生命周期中，始终不会被卸载。jvm始终会引用这些类加载器,这些类加载器会始终引用他们所加载的Class对象，因此这些**Class对象**始终是可触及的。 
+  + 可被卸载的类:用户自定义的类加载器加载的类
+  + 卸载实例:
+    + ![image-20200902231135744](image-20200902231135744.png)
