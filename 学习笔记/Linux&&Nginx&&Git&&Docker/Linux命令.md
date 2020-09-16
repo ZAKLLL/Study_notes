@@ -91,7 +91,43 @@
 
 ### 正则表达式：grep
 + 语法：grep [-acinv] [--color=auto] '查找字符串' filename
+
 + 查看进程为java的状态: ps -aux|grep java
+
++ grep -v  xxx: 表示匹配xxx以外的东西(去除xxx的匹配内容)  
+
+  NOT匹配
+
+  ```bash
+  #查询run.jar的pid
+  #grep -v grep 排除查询时grep命令
+  #awk '{print $2}' 按照空格切分取第二个值
+  pid= ps -ef|grep run.jar|grep -v grep|awk '{print $2}'
+  ```
+
++ grep进行OR匹配
+
+  ```bash
+  grep -E 'pattern1|pattern2' filename  
+  #-------------------------------------
+  grep 'pattern1\|pattern2' filename  
+  #--------------------------------------
+  egrep 'pattern1|pattern2' filename  
+  #--------------------------------------
+  grep -e pattern1 -e pattern2 filename  
+  ```
+
++ grep 进行AND匹配
+
+  ```bash
+  grep -E 'pattern1.*pattern2' filename  
+  grep -E 'pattern1.*pattern2|pattern2.*pattern1' filename  
+  
+  #------------------------------------------------
+  grep -E 'pattern1' filename | grep -E 'pattern2'  
+  ```
+
+  
 
 
 ### 系统任务相关：

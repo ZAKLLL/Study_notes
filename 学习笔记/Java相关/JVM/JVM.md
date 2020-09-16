@@ -61,7 +61,6 @@
   
   class Parent {
       public static String str = "Hello World";
-      //    public static static String str = "Hello World";
       static {
           System.out.println("Parent");
       }
@@ -93,7 +92,12 @@
 
 + 类加载器的命名空间：
 
-  + ![image-20200901224210104](image-20200901224210104.png)
+  + 每个类加载器都有自己的命名空间, <font color='red'> **命名空间由该加载器及所有父类加载器所加载的类组成** </font>
+  + <font color="red">在同一个命名空间中，不会出现类的完整名字(包括类的包名)相同的两个类</font>
+  + <font color='red'>在不同的命名空间中，有可能会出现类的完整名字(包括类的包名)相同的两个类</font>
+  + **子加载器所加载的类能够访问到父加载器所加载的类**
+  + **父加载器所加载的类无法访问到字加载器所加载的类**
+  + ![image-20200914223557048](image-20200914223557048.png)
 
 + 自定义类加载器与双亲委托机制:
 

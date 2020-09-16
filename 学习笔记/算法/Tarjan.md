@@ -9,9 +9,9 @@
 
 ```java
 /**
- * Tarjan求有向图
+ * Tarjan求有向图 强连通分量
  */
-public class Tarjan {
+public class Tarjan1 {
     private int time = 0;
     private Stack<Integer> stack = new Stack<>();
     private List<List<Integer>> ret = new ArrayList<>();
