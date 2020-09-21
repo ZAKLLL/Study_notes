@@ -118,13 +118,6 @@ class Prim {
         return min_index;
     }
 
-    // A utility function to print the constructed MST stored in
-    // parent[]
-    void printMST(int[] parent, int[][] graph) {
-        System.out.println("Edge \tWeight");
-        for (int i = 1; i < V; i++)
-            System.out.println(parent[i] + " - " + i + "\t" + graph[i][parent[i]]);
-    }
 
     // Function to construct and print MST for a graph represented
     // using adjacency matrix representation
@@ -177,6 +170,15 @@ class Prim {
         // print the constructed MST
         printMST(parent, graph);
     }
+    
+    
+    // A utility function to print the constructed MST stored in
+    // parent[]
+    void printMST(int[] parent, int[][] graph) {
+        System.out.println("Edge \tWeight");
+        for (int i = 1; i < V; i++)
+            System.out.println(parent[i] + " - " + i + "\t" + graph[i][parent[i]]);
+    }
 
     public static void main(String[] args) {
         /* Let us create the following graph
@@ -203,6 +205,7 @@ class Prim {
 
 ```python
     def prim(self,graph: List[List[int]]):
+        #求距离mst最近的点
         def minKey(key,mstSet,V):
             minV=float('inf')
             minIndex=-1
