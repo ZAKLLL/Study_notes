@@ -395,3 +395,16 @@ public void test(){
 
 + Stream的分组，通过collect(Collectors.groupingBy())来进行分组，返回一个Map类型
 
+
+
+## 奇淫巧计
+
++ 排序输出
+
+```java
+IntStream.of(nums).boxed().sorted(Collections.reverseOrder()).mapToInt(Integer::intValue).toArray();
+
+```
+
+
+
