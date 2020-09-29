@@ -51,11 +51,31 @@
    </form>
   ```
 
-+ fmt标签(时间显示)：
++ 时间格式化
 
-  + ```xml
-    <fmt:formatDate value="${obj.createdate}" pattern="yyyy-MM-dd HH:MM:SS"></fmt:formatDate>
-    ```
+  toPatten = "yyyy-mm-dd : hh:mm:ss"
+
+  fromPatten ="dd/mm/yyyy"
+
+  转换过程中发现一些问题，首先没有搞清楚这些大小写代表的含义：
+
+  YYYY 代表 Week Year
+
+  yyyy 代表year
+
+  
+
+  MM 代表 月（Month）
+
+  mm代表 秒（Min）
+
+  
+
+  HH代表24小时制
+
+  hh代表12小时制
+
+  
 
 + 线程：详情见java并发以及多线程关键字volatile
 
