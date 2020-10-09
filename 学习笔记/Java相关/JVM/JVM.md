@@ -47,10 +47,14 @@
     + 访问某个类或接口的静态变量，或者对该静态变量赋值
     + 调用类的静态方法
     + 反射(Class.forName("com.test.Test"))
-    + 初始化一个类的字类
+    + 初始化一个类的子类
+      + 此条规则不适用于接口(Interface)
+      + 在初始化一个类时，并不会先初始化他所实现的接口
+      + 在初始化一个接口时，并不会先初始化它的父接口
+      + 只有当程序首次使用特定接口的静态变量时，才会导致该接口的初始化。
     + JVM启动时被表明为启动类的类
   + 被动使用(并不会导致类的**初始化**)
-  
+
   ```java
   public class MyTest1 {
       public static void main(String[] args) {
@@ -82,22 +86,39 @@
 
 ### ClassLoader
 
-+ 数组类型的对象加载是在运行时被classloader动态创建生成的
-
-+ 如果数组中的对象是原生数据类型(int,long...) ,则改对象的classloade为null
-
++ **数组类型的对象加载是在运行时被classloader动态创建生成的**
++ 如果数组中的对象是原生数据类型(int,long...) ,则该对象的classloader为null
 + 自定义类加载器通过拓展类加载器来拓展JVM动态加载类的能力(通过双亲委托机制)
-
++ **AppClassLoader和ExtensionClassLoader是由BootStrapClassLoader(启动类加载器)加载**(由CPP编写,无需被类加载(破解先有鸡还是先有蛋的问题 ))
+  + 启动类加载器还会负责加载JRE正常运行所需要的基本组件,这包括java.util与java.lang包中的类等等。
 + 类加载器通常会被安全管理器所使用来确保类加载过程的安全。
-
 + 类加载器的命名空间：
 
   + 每个类加载器都有自己的命名空间, <font color='red'> **命名空间由该加载器及所有父类加载器所加载的类组成** </font>
+  + 同一个加载器加载的类是相互可见的(同一命名空间)
   + <font color="red">在同一个命名空间中，不会出现类的完整名字(包括类的包名)相同的两个类</font>
   + <font color='red'>在不同的命名空间中，有可能会出现类的完整名字(包括类的包名)相同的两个类</font>
   + **子加载器所加载的类能够访问到父加载器所加载的类**
   + **父加载器所加载的类无法访问到字加载器所加载的类**
-  + ![image-20200914223557048](image-20200914223557048.png)
++ 线程上下文类加载器-context Classloader
+  + 线程上下文类加载器就是当前线程的Current Classloader.
+  + 父ClassLoader可以使用当前线程Thead.currentThread().getContextClassLoader()所指定的classloader加载的类。间接改变了父ClassLoader不能使用子ClassLoader或是其他没有直接父子关系的ClassLoader加载的类的情况,即改变了双亲委托模型。
+  + 在双亲委托模型下,类加载是由下至上的，即下层的类加载器会委托上层进行加载.但是对于SPI(Service provider Interface)来说,有些接口是Java核心库所提供的,而Java核心库是由启动类加载器来加载的，而这些SPI接口的实现来自于不同的Jar包(厂商提供),Java的启动类加载器是不会加载其他来源的Jar包，这样的传统的双亲委托模型就无法满足SPI的要求。而通过给当前线程设置上下文类加载器，就可以设置上下文类加载来实现对于接口实现类的加载
+
+## 双亲委托机制与自定义类加载器
+
++ ## 双亲委派
+
+  +  AppClassLoader 只负责加载 Classpath 下面的类库，如果遇到没有加载的系统类库怎么办，AppClassLoader 必须将系统类库的加载工作交给 BootstrapClassLoader 和 ExtensionClassLoader 来做，这就是我们常说的「双亲委派」。
+     + ![image-20200430185049820](image-20200430185049820.png)
+     + AppClassLoader 在加载一个未知的类名时，它并不是立即去搜寻 Classpath，它会首先将这个类名称交给 ExtensionClassLoader 来加载，如果 ExtensionClassLoader 可以加载，那么 AppClassLoader 就不用麻烦了。否则它就会搜索 Classpath 。而 ExtensionClassLoader 在加载一个未知的类名时，它也并不是立即搜寻 ext 路径，它会首先将类名称交给 BootstrapClassLoader 来加载，如果 BootstrapClassLoader 可以加载，那么 ExtensionClassLoader 也就不用麻烦了。否则它就会搜索 ext 路径下的 jar 包。这三个 ClassLoader 之间形成了级联的父子关系，每个 ClassLoader 都很懒，尽量把工作交给父亲做，父亲干不了了自己才会干。每个 ClassLoader 对象内部都会有一个 parent 属性指向它的父加载器。
+     + 值得注意的是ExtensionClassLoader不会直接加载.class文件而是加载.jar文件。
+
++ 使用双亲委托机制的好处:
+
+  1. 确保Java核心库的类型安全:所有的java应用都至少会引用java.lang.Object类，也就是在运行期，java.lang.Object这个类会被加载到Java虚拟机中，如果这个过程是由自定义类加载器完成，那么就有可能在jvm中存在多个版本的Java.lang.Object类，且因为类加载器命名空间的原因，导致这些类互相不可见。而使用了双亲委托机制则保证了java的核心类库是由同一个类加载器创建，互相之间具有可见性。
+  2. 确保Java核心类库所提供的类不会被自定义的类所替代
+  3. 不同的类加载器可以为相同的限定类名(binary name) 的类提供额外的命名空间。相同名称的类可以并存在Java虚拟机中，只需要用不同的类加载器来加载他们即可，不同的类加载器所加载的类是互不可见的，相当于在jvm虚拟机中创建了不同的java类空间。
 
 + 自定义类加载器与双亲委托机制:
 
