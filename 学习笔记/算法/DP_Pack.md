@@ -37,7 +37,7 @@
 
 + 完全背包(每个物品能选任意多次)
 
-```java
+	```java
     //背包中的物品能选任意多次
     public int complete(int[] cost, int[] w, int n, int V) {
         int[] dp = new int[V + 1];
@@ -48,4 +48,4 @@
         }
         return dp[V];
     }
-```
+	```
