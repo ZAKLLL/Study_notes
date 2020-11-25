@@ -1,4 +1,4 @@
-![1551150232363](../../images/1551150232363.png)
+![1551150232363](./1551150232363.png)
 
 监听本机的80端口，将听到的manage.leyou.com转发到http://127.0.0.1:9001,在这之后，可以进行zuul进行路由，再通过负载均衡选择合适的服务
 
@@ -73,8 +73,7 @@ http {
 	proxy_set_header X-Forwarded-Server $host;
 	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         location /checksys {
-               
-	     	proxy_pass  http://localhost:8080/checksys;
+	     	proxy_pass  http://localhost:8080/checksys/;
 	        proxy_connect_timeout 1000;
     		proxy_read_timeout 1000;
 	        proxy_set_header Host $host;

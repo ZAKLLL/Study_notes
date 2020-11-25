@@ -4,7 +4,7 @@ date: 2019-11-14 15:12:57
 tags: 多线程 Integer
 ---
 
-前阵子和同学交流的时候发现了这样一段代码，没有按照预定想法进行输出：
+发现了这样一段代码，没有按照预定想法进行输出：
 
 ```java
 public class Demo implements Runnable {

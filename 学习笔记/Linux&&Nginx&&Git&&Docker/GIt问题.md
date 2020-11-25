@@ -138,4 +138,25 @@ origin
   表明合并当前节点过去n个节点，合并为倒数第n个节点。就可以变为一次commit
   ```
 
-  
+
++ 将fork的仓库进行私有化:
+
+  + Create a bare clone of the repository.
+
+    ```shell
+    $ git clone --bare https://github.com/exampleuser/old-repository.git
+    ```
+
+  + Mirror-push to the new repository.
+
+    ```shell
+    $ cd old-repository.git
+    $ git push --mirror https://github.com/exampleuser/new-repository.git
+    ```
+
+  + Remove the temporary local repository you created earlier.
+
+    ```shell
+    $ cd ..
+    $ rm -rf old-repository.git
+    ```
