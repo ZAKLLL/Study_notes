@@ -34,54 +34,106 @@ AMQP协议中的核心思想就是生产者和消费者隔离，生产者从不�
 
 
 
-+ fantout模式:
+## fantout模式
 
-  ![image-20201201162030155](image-20201201162030155.png)
+![image-20201201162030155](image-20201201162030155.png)
 
-  ```java
-  public class Publisher {
-      private final static String EXCHANGE_NAME = "logs";
-  
-      public static void main(String[] args) throws IOException, TimeoutException {
-          Publisher publisher = new Publisher();
-          Channel pushChannel = MqUitl.getPushChannel(publisher);
-          //声明路由
-          pushChannel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-          //如果没有显式指定队列名称,则会随机生成队列名
-          //当连接关闭时,此队列会自动删除
-          String queueName = pushChannel.queueDeclare().getQueue();
-          pushChannel.queueBind(queueName, "logs", "");
-  
-          String msg = "published msg";
-          pushChannel.basicPublish(EXCHANGE_NAME, "", null, msg.getBytes(StandardCharsets.UTF_8));
-          System.out.println(" [x] Sent '" + msg + "'");
-          pushChannel.close();
-          MqUitl.getMqConnection(publisher).close();
-      }
-  }
-  ```
+```java
+public class Publisher {
+    private final static String EXCHANGE_NAME = "logs";
 
-  ```java
-  public class Subscriber {
-      private static final String EXCHANGE_NAME = "logs";
-  
-      public static void main(String[] argv) throws Exception {
-          Channel channel = MqUitl.getRecvChannel(new Subscriber());
-          channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-          String queueName = channel.queueDeclare().getQueue();
-          channel.queueBind(queueName, EXCHANGE_NAME, "");
-  
-          System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-  
-          DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-              String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-              System.out.println(" [x] Received '" + message + "'");
-          };
-          channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
-          });
-      }
-  }
-  ```
+    public static void main(String[] args) throws IOException, TimeoutException {
+        Publisher publisher = new Publisher();
+        Channel pushChannel = MqUitl.getPushChannel(publisher);
+        //声明路由
+        pushChannel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+        
+        String msg = "published msg";
+        pushChannel.basicPublish(EXCHANGE_NAME, "", null, msg.getBytes(StandardCharsets.UTF_8));
+        System.out.println(" [x] Sent '" + msg + "'");
+        pushChannel.close();
+        MqUitl.getMqConnection(publisher).close();
+    }
+}
+```
 
-  
+```java
+public class Subscriber {
+    private static final String EXCHANGE_NAME = "logs";
+
+    public static void main(String[] argv) throws Exception {
+        Channel channel = MqUitl.getRecvChannel(new Subscriber());
+        channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+        String queueName = channel.queueDeclare().getQueue();
+        channel.queueBind(queueName, EXCHANGE_NAME, "");
+
+        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println(" [x] Received '" + message + "'");
+        };
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
+        });
+    }
+}
+```
+## direct模式
+
+在这个设置中，我们可以看到直接交换X，有两个队列与之绑定。第一个队列用绑定键橙色绑定，第二个队列有两个绑定，一个用绑定键黑色，另一个用绿色。
+
+在这样的设置中，发布到交易所的路由键为橙色的消息将被路由到队列Q1。路由键为黑色或绿色的消息将进入Q2。所有其他消息将被丢弃。
+
+![image-20201202091943913](image-20201202091943913.png)
+
+同一个键绑定多个queue也是合法的,下面这个例子中black绑定了Q1,Q2,当向exchange推送消息时,c1,c2能够同时消费,等同于fanout
+
+![image-20201202092036934](image-20201202092036934.png)
+
+```java
+public class EmitLog {
+    private final static String EXCHANGE_NAME = "logs";
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        EmitLog emitLog = new EmitLog();
+        Channel pushChannel = MqUitl.getPushChannel(emitLog);
+        //声明路由
+        pushChannel.exchangeDeclare(EXCHANGE_NAME, "direct");
+        String[] severity = {"info", "debug", "error"};
+        String[] log = {"[info]---log", "[debug]---log", "[error---log]"};
+        for (int i = 0; i < 100; i++) {
+            pushChannel.basicPublish(EXCHANGE_NAME, severity[i % 3], null, log[i % 3].getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent '" + log[i % 3] + "'");
+        }
+        pushChannel.close();
+        MqUitl.getMqConnection(emitLog).close();
+    }
+}
+```
+
+```java
+public class LogReceiver {
+    private static final String EXCHANGE_NAME = "logs";
+
+    public static void main(String[] argv) throws Exception {
+        Channel channel = MqUitl.getRecvChannel(new LogReceiver());
+        channel.exchangeDeclare(EXCHANGE_NAME, "direct");
+        channel.queueDeclare("debugQueue", false, true, true, null);
+        channel.queueDeclare("infoQueue", false, true, true, null);
+        channel.queueBind("debugQueue", EXCHANGE_NAME, "debug");
+        channel.queueBind("infoQueue", EXCHANGE_NAME, "info");
+
+        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println(" [x] Received '" + message + "'"+consumerTag);
+        };
+        channel.basicConsume("debugQueue", true, deliverCallback, consumerTag -> {
+        });
+        channel.basicConsume("infoQueue", true, deliverCallback, consumerTag -> {
+        });
+    }
+}
+```
 

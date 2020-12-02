@@ -19,7 +19,6 @@ public class producer {
                 send(msg, channel);
             }
         }
-
     }
 
     public static void send(String msg, Channel channel) throws IOException {
