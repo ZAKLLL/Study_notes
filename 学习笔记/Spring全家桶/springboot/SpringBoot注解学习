@@ -1,4 +1,4 @@
-## 注解源码
+# 注解
 
 + @Configuration注解
 
@@ -26,7 +26,51 @@
        // use myBean ...
        ```
 
+  + **@Configuration(proxyBeanMethods = false)**
+
+    + 在这里，proxyBeanMethods将保证'sharedService'方法被拦截，其结果被重复使用。如果按照正常的java逻辑，当调用serviceA()和serviceB()时，会有两个不同的ServiceC实例，而当直接调用sharedService()时，会创建第三个实例。那么代理拦截器会确保实际方法只被调用一次，所以只创建一个共享ServiceC的实例，ServiceA和ServiceB都会得到共享实例。
+    + ```java
+      @Configuration(proxyBeanMethods=true)
+      public class SomeConfiguration {
+        @Bean
+        ServiceA serviceA(){
+          return new ServiceA(sharedService());
+        }
+      
+        @Bean
+        ServiceB serviceB(){
+          return new ServiceB(sharedService());
+        }
+      
+        @Bean
+        ServiceC sharedService(){
+          return new ServiceC();
+        }
+      }
+      ```
+
+      或者使用下面的方式,不对sharedService()进行代理拦截,自动从Bean容器中获取**sharedService**并进行注入。
     
+    + ```java
+      @Configuration(proxyBeanMethods=false)
+      public class SomeSmarterConfiguration {
+      
+          @Bean
+          ServiceC sharedService(){
+            return new ServiceC();
+          }
+      
+          @Bean
+          ServiceA serviceA(ServiceC sharedService){
+            return new ServiceA(sharedService);
+          }
+      
+          @Bean
+          ServiceB serviceB(ServiceC sharedService){
+            return new ServiceB(sharedService);
+          }
+      }
+      ```
 
 + 使用@import导入配置类：
 
