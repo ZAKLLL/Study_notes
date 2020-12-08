@@ -1,3 +1,7 @@
+```java
+proxyBeanMethods 
+```
+
 # Redis
 
 +  开启服务：
@@ -13,9 +17,8 @@
 
   + ```
     redis 127.0.0.1:6379> SAVE
-    该命令将在 redis 安装目录中创建dump.rdb文件
-  ```
-    
+    该命令将在 redis 安装目录中创建dump.rdb文件  
+    ```
 
 +  config set maxclients: 最大客户端连接数
 
