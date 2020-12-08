@@ -1,6 +1,6 @@
 # 注解
 
-+ @Configuration注解
++ **@Configuration**注解
 
   + 指示一个类声明了一个或多个@Bean方法，并且可以由Spring容器进行处理以在运行时为这些bean生成bean定义和服务请求，例如：
     
@@ -72,13 +72,13 @@
       }
       ```
 
-+ 使用@import导入配置类：
++ 使用**@import**导入配置类：
 
   + With the @Import annotation
     @Configuration类可以使用@Import注释组成，类似于<import>在Spring XML中的工作方式。 因为@Configuration对象作为容器中的Spring bean管理，所以可以注入导入的配置-例如，通过构造函数注入：
 
     ```java
-           @Configuration
+           //@Configuration (当compponentScan没有扫描到该类时候,@Import可以将该类注入concext容器)
            public class DatabaseConfig {
                @Bean
                public DataSource dataSource() {
@@ -113,7 +113,9 @@
     new AnnotationConfigApplicationContext(AppConfig.class);
     ```
     
-  + 使用@Profile指定开发配置：
+  + **@Profile**
+
+    使用@Profile指定开发配置：
 
     带有@Profile批注
     @Configuration类可以用@Profile注释标记，以指示仅当给定的一个或多个配置文件处于活动状态时才应处理它们：
@@ -186,6 +188,72 @@
 
       在引导这种安排时，仅需要针对应用程序上下文注册AppConfig。 由于是嵌套的@Configuration类，因此将自动注册DatabaseConfig。 当AppConfig和DatabaseConfig之间的关系已经隐式清除时，这避免了使用@Import批注的需要。
       还要注意，嵌套的@Configuration类可以与@Profile批注一起使用，为封闭的@Configuration类提供同一bean的两个选项。
+    
+  + **@PropertySource**
+
+    ​		加载指定的属性文件（*.properties）到 Spring 的 Environment 中。可以配合 @Value 和 @ConfigurationProperties 使用。
+
+    - @PropertySource 和 @Value 组合使用，可以将自定义属性文件中的属性变量值注入到当前类的使用@Value注解的成员变量中。
+
+    - @PropertySource 和 @ConfigurationProperties 组合使用，可以将属性文件与一个Java类绑定，将属性文件中的变量值注入到该Java类的成员变量中。
+
+    - 使用示例 @PropertySource + @Value 
+
+      demo.properties:
+
+      ```properties
+      demo.name=huang
+      demo.sex=1
+      demo.type=demo
+      ```
+
+      ```java
+      import org.springframework.beans.factory.annotation.Value;
+      import org.springframework.context.annotation.PropertySource;
+      import org.springframework.stereotype.Component;
+      
+      @Component
+      @PropertySource(value = {"demo/props/demo.properties"})
+      public class ReadByPropertySourceAndValue {
+      
+          @Value("${demo.name}")
+          private String name;
+      
+          @Value("${demo.sex}")
+          private int sex;
+      
+          @Value("${demo.type}")
+          private String type;
+      }
+      ```
+
+    - @PropertySource 和 @ConfigurationProperties 
+
+      ```java
+      import org.springframework.boot.context.properties.ConfigurationProperties;
+      import org.springframework.context.annotation.PropertySource;
+      import org.springframework.stereotype.Component;
+      
+      @Component
+      @PropertySource(value = {"demo/props/demo.properties"})
+      @ConfigurationProperties(prefix = "demo")
+      @Data
+      public class ReadByPropertySourceAndConfProperties {
+      
+          private String name;
+      
+          private int sex;
+      
+          private String type;
+      
+      }
+      ```
+
+      
+
+
+
+
 
 
 
