@@ -1,8 +1,8 @@
 + 在java io中，核心概念为流（Stream)，面向流的编程，一个流要么是输出流，要么是输入流，不能够同时是输出流又同时是输入流。
 
-+ java nio中有三个核心概念，Selector,Channel，Buffer，在Nio中，我们是面向块（block)或者缓冲区（buffer)编程。Buffer本身是一块内存，底层实际就是数组，数据的读写，都是通过Buffer来实现的。
++ java nio中有三个核心概念，**Selector**,**Channel**，**Buffer**，在Nio中，我们是面向块（block)或者缓冲区（buffer)编程。Buffer本身是一块内存，底层实际就是数组，数据的读写，都是通过Buffer来实现的。
 
-+ **Buffer**:提供了对于数据的结构化访问方式，并且可以追踪到系统的读写过程。在java中，七种原生数据类型都有各自的Buffer类型，如**IntBuffer,LongBuffer,ByteBuffer...** **Buffer使用flip()方法来改变读写状态**
++ **Buffer**:提供了对于数据的结构化访问方式，并且可以追踪到系统的读写过程。在java中，七种原生数据类型都有各自的Buffer类型，如**IntBuffer,LongBuffer,ByteBuffer...**  Buffer使用**flip()**方法来改变读写状态
 
 + **Channel**:可以向其中写入或是从中读取数据的对象，类似于java.io中的Stream。所有的Channel的数据读写都是通过Buffer来进行的，永远不能直接向Channel直接读取对象或者直接写入对象。
 
@@ -121,7 +121,7 @@
 ### 单个Channel与多个Buffer的交互(Scattering与Gathering):
 
 ```java
-public class NioTest11 {
+public class NioTest {
     public static void main(String[] args) throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         InetSocketAddress address = new InetSocketAddress(8899);
@@ -351,6 +351,7 @@ public class NioServer {
         ServerSocket socket = serverSocketChannel.socket();
         socket.bind(new InetSocketAddress(8989));
         Selector selector = Selector.open();
+		//serverSocketChannel 仅支持Accept操作
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
         while (true) {
