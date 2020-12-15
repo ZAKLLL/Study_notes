@@ -18,11 +18,6 @@
 
 + @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")  将Date转换成String  一般后台传值给前台时
 
-+ Qualifier: **@Qualifier** 注释和 **@Autowired** 注释通过指定哪一个真正的 bean 将会被装配来消除混乱
-  + @Autowired
-    @Qualifier("jwtUserDetailsService")
-    private UserDetailsService userDetailsService; 
-  
 + **系统缓存常用注解**:
   + @CacheConfig：主要用于配置该类中会用到的一些共用的缓存配置
   + @Cacheable：主要方法的返回值将被加入缓存。在查询时，会先从缓存中获取，若不存在才再发起对数据库的访问。
@@ -47,10 +42,16 @@
         }
     ```
 
-+ @Primary:
++ **@Primary**:
   
-+ 自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常
+  自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常
   
++ **Qualifier**: **@Qualifier** 注释和 **@Autowired** 注释通过指定哪一个真正的 bean 将会被装配来消除混乱
+
+  + @Autowired
+    @Qualifier("jwtUserDetailsService")
+    private UserDetailsService userDetailsService; 
+
 + Entity:
   + 必须是顶级类
   + @Entity注解的类

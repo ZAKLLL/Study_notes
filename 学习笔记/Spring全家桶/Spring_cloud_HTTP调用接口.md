@@ -127,8 +127,35 @@
         }
     }
     ```
-
     
+  + 使用feign调用与失败调用,并且在调用过程中自定义HttpRequest
+
+    ```java
+    @Component
+    @FeignClient(name = "authentication-server", fallback = AuthProvider.AuthProviderFallback.class)
+    public interface AuthProvider {
+        //调用authentication-server 对应的/auth/permission 接口
+        //将token放置在远程调用的HttpRequest中的头信息里
+        @PostMapping(value = "/auth/permission")
+        Result auth(@RequestHeader(HttpHeaders.AUTHORIZATION) String authentication, @RequestParam("url") String url, @RequestParam("method") String method);
+    
+        @Component
+        class AuthProviderFallback implements AuthProvider {
+    
+            @Override
+            public Result auth(String authentication, String url, String method) {
+                return Result.fail();
+            }
+        }
+    }
+    
+    ----------Povider-------------
+    @PostMapping(value = "/auth/permission")
+    public Result decide(@RequestParam String url, @RequestParam String method, HttpServletRequest request) {
+            boolean decide = authenticationService.decide(new HttpServletRequestAuthWrapper(request, url, method));
+            return Result.success(decide);
+        }
+    ```
 
     
 

@@ -1,7 +1,3 @@
-```java
-proxyBeanMethods 
-```
-
 # Redis
 
 +  开启服务：
