@@ -3,6 +3,8 @@ SpringMVC
 + **SpringMVC结构图**
 
   ![1545546821865](../../images/1545546821865.png)
+  
+  ![image-20201221103004708](image-20201221103004708.png)
 
 1. 创建webproject
 
