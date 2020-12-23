@@ -231,19 +231,19 @@ Servlet 的 Filter 接口需要实现如下方法：
   3. 既针对URL Pattern进行匹配,同时希望使用Spring容器资源
 
      ```java
-         @Bean(name = "accessControlFilter")
-         public Filter accessControlFilter() {
-             return new AccessControlFilter();
+         @Bean
+         public FilterRegistrationBean<MyFilter> filterFilterRegistrationBean() {
+             FilterRegistrationBean<MyFilter> registrationBean = new FilterRegistrationBean<>();
+             //注意这里是myFilter()而不是new MyFilter()
+             //调用被@Bean注解的myFilter()实际上只会生产一个myFilter Bean实例,且此filter同时具有url pattern和spring 容器资源的能力
+             registrationBean.setFilter(myFilter());
+             registrationBean.addUrlPatterns("/*");
+             return registrationBean;
          }
      
          @Bean
-         public FilterRegistrationBean<Filter> accessControlFilterRegistration() {
-             FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<Filter>();
-             registration.setFilter(accessControlFilter());
-             registration.addUrlPatterns("/*");
-             registration.setName("accessControlFilter");
-             registration.setOrder(1);
-             return registration;
+         public MyFilter myFilter() {
+             return new MyFilter();
          }
      ```
 
