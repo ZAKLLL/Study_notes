@@ -158,5 +158,5 @@
   + 利用volatile变量的写-读所具有的内存语义
   + 利用CAS锁附带的volatile读写内存语义
   + CAS操作步骤：
-    + 获取锁:volatile读(禁止后面的操作重排序)
-    + 释放锁:volatile写(禁止前面的操作重排序)
+    + 获取锁:volatile读(禁止后面的操作重排序)/**volatile读-LoadLoad-LoadSotre**
+    + 释放锁:volatile写(禁止前面的操作重排序) /**StoreSotre-volatile写-StoreLoad**

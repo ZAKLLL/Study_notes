@@ -90,6 +90,7 @@
 
    ```java
    class Singleton {
+       //volatile 禁止类构造时发生重排序
        private volatile static Singleton singleton;
    
        //不允许直接被外部调用构造方法
@@ -117,7 +118,7 @@
        private Singleton() {
    
        }
-   
+   	//在执行类的初始化期间,JVM会去尝试获取一个锁,这个锁可以同步多个线程,对同一个类的初始化
        public static Singleton getInstance() {
            return SingletonHolder.instance;
        }
