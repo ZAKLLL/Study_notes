@@ -69,8 +69,7 @@
    1. 类的代理 class
 
       ```kotlin
-      //kotlin代理 编译后实为java中的静态代理
-      interface Animal{
+      interface Animal {
           fun bark()
       }
       
@@ -80,14 +79,17 @@
           }
       }
       
-      class Zoo(animal: Animal) : Animal by animal {
+      class Cat : Animal {
           override fun bark() {
-              println("ZOO’s Bark")
+              print("CAT's Bark()")
           }
       }
       
+      class Zoo(animal: Animal) : Animal by animal
+      
       fun main(args: Array<String>) {
-          Zoo(Dog()).bark()
+          Zoo(Dog()).bark() //DOG's Bark()
+          Zoo(Cat()).bark() //CAT's Bark()
       }
       
       ```
