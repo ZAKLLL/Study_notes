@@ -1,5 +1,7 @@
 # Java synchronized关键字
 
+synchronized对于同步块的实现使用了**monitorenter**和**monitorexit** 来进行排他访问(获取锁)，而同步方法是依靠方法是修饰符上的**ACC_SYCHRONIZED**来完成的，无论采用哪种方式，本质是对一个对象的监视器(**monitor**)进行获取,而这个过程是排他的,也就是同一时刻只能有一个线程获取到**synchronized**所保护对象的监视器。
+
 ## 对象锁
 
 + **同步代码块_对象锁**（thread.join可表示为当前线程执行完毕后在进行下一个线程执行）
