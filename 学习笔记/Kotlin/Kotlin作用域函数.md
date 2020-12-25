@@ -69,7 +69,7 @@ fun main() {
     str.run {
         println("The receiver string length: $length")
         //println("The receiver string length: ${this.length}") // does the same
-        //在这段代码中this指的是调用者本身(即lambda函数接受者)
+        //在这段代码中this指的是调用者本身 (即lambda函数接受者)
     }
 
     // it
