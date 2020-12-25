@@ -4,53 +4,111 @@
 
 ## 核心名词
 
-+ ChannelHandler:处理I / O事件或拦截I / O操作，并将其转发到其ChannelPipeline下一个处理程序。
-  子类型ChannelHandler本身并不提供许多方法，但是通常必须实现其子类型之一：
++ channel:Socket
+
+  + 基本的I/O操作(bind(),connect(),read(),write()) 依赖于底层网络传输所提供的原语.
+  + 部分实现:
+    + EmbeddedChannel:嵌入式设备使用的Channel
+    + LocalServerChannel:用于本地传输的ServerChannel ，允许进行VM通信
+    + NioDatagramChannel:发送和接收AddressedEnvelope的NIO数据报Channel   。
+    + NioSctpChannel: 该实现使用非阻塞模式，并允许将SctpMessage读/写到基础SctpChannel 。 请注意，并非所有操作系统都支持SCTP。Java 7+上受支持
+    + NioSocketChannel: SocketChannel使用基于NIO选择器的实现
+
++ EventLoop:控制流,多线程处理,并发
+
+  + EventLoop 定义了Netty的核心抽象,用于处理连接的生命周期所发生的事件
+
+    ![image-20201225161410301](image-20201225161410301.png)
+
+  + 图中各成员关系:
+
+    + 一个EvevtLoopGroup包含一个或多个EventLoop
+    + 一个EventLoop在它的生命周期内只和一个Thread绑定
+    + 所有由EventLoop处理的I/O时间都将在它专有的Thread上处理
+    + 一个Channel在他的生命周期内只注册于一个EventLoop
+    + 一个EventLoop可能会被分配给一个或多个Channel
+
++ **ChannelFuture**:异步通知
+
+  + Netty中所有的I/O操作都是异步的。因为一个操作可能不会立即返回，所以我们需要一种用于在之后的某个时间点确定其结果的方法。为此，Netty提供了ChannelFuture接口
+
++ **ChannelHandler**:处理I / O事件或拦截I / O操作，并将其转发到其ChannelPipeline下一个处理程序。
+  子类型ChannelHandler本身并不提供许多方法，但是通常必须实现其子类型之一
 
   + ChannelInboundHandler处理入站I / O事件，以及ChannelOutboundHandler处理出站I / O操作。
+
   + 另外，为了方便，提供了以下适配器类：ChannelInboundHandlerAdapter处理入站I / O事件，
     ChannelOutboundHandlerAdapter来处理出站I / O操作，以及ChannelDuplexHandler处理入站和出站事件
 
-+ 责任链调用:
+  + 在Netty中，有两种发送消息的方式:
 
-  ```kotlin
-  ch.pipeline().addLast(TimeDecoder(), TimeClientHandler(),TimeClientHandler2())
-  
-  //handhler
-  
-  class TimeClientHandler : ChannelInboundHandlerAdapter() {
-      override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
-          val unixTime = msg as UnixTime
-          println(unixTime)
-          //此处如果不调用super方法,入站调用将在此处停止
-          super.channelRead(ctx, msg)
+    + 直接写到Channel中(需要先获取channel)(消息从Channel-Pipeline的尾端开始流动)
+
+      ```java
+      ctx.channel().write("abc")
+      Override
+      public final ChannelFuture write(Object msg) {
+          return tail.write(msg);
       }
-  }
-  
-  class TimeClientHandler2 : ChannelInboundHandlerAdapter() {
-      override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
-          val unixTime = msg as UnixTime
-          println("2$unixTime")
-          super.channelRead(ctx, msg)
+      ```
+
+    + 写到和Channel-Handler相关联的ChannelHandlerContext对象:(消息从ChannelPipeline中的下一个Channel-Handler开始流动)
+
+      ```java
+      ctx.write("abc")
+      @Override
+      public ChannelFuture write(Object msg) {
+          return pipeline.write(msg);
       }
-  }
-  
-  // Adapter提供的调用实现   
-  @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-      ctx.fireChannelRead(msg);
-  }
-  //通过super 方法是为了调用AbstractChannelHandlerContext 中的方法,进行进行责任链调用.
-  @Override
-  public ChannelHandlerContext fireChannelRead(final Object msg) {
-      invokeChannelRead(findContextInbound(MASK_CHANNEL_READ), msg);
-      return this;
-  }
-  ```
+      ```
 
-  
 
-+ channelPipeline调用链
++ **ChannelPipeline**:提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。ChannelHandler安装到ChannelPipeline中的过程如下所示：
+
+  + 一个ChannelInitializer的实现被注册到了ServerBootstrap中
+
+  + 当ChannelInitializer.initChannel()方法被调用时，ChannelInitializer将在ChannelPipeline中安装一组自定义的ChannelHandler
+
+  + ChannelInitializer将它自己从ChannelPipeline中移除
+
+  + 责任链调用:
+
+    ```kotlin
+    ch.pipeline().addLast(TimeDecoder(), TimeClientHandler(),TimeClientHandler2())
+    
+    //handhler
+    
+    class TimeClientHandler : ChannelInboundHandlerAdapter() {
+        override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
+            val unixTime = msg as UnixTime
+            println(unixTime)
+            //此处如果不调用super方法,入站调用将在此处停止
+            super.channelRead(ctx, msg)
+        }
+    }
+    
+    class TimeClientHandler2 : ChannelInboundHandlerAdapter() {
+        override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
+            val unixTime = msg as UnixTime
+            println("2$unixTime")
+            super.channelRead(ctx, msg)
+        }
+    }
+    
+    // Adapter提供的调用实现   
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ctx.fireChannelRead(msg);
+    }
+    //通过super 方法是为了调用AbstractChannelHandlerContext 中的方法,进行进行责任链调用.
+    @Override
+    public ChannelHandlerContext fireChannelRead(final Object msg) {
+        invokeChannelRead(findContextInbound(MASK_CHANNEL_READ), msg);
+        return this;
+    }
+    ```
+
+  + channelPipeline调用链
 
 ```
 *  +---------------------------------------------------+---------------+
@@ -250,3 +308,5 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
 + ChannelFuture  ChannelFuture的作用是用来保存Channel异步操作的结果。
 
 + ChannelPipeline ： 可以看做是ChannelHandler的链表，用来添加不同的ChannelHandler
+
++ tcp每次交换数据,不保证数据会被一次性全部接收,有可能会存在,单次发送数据被分片接收.但是作为一个面向流的协议,tcp保证了数据片将会按照服务器发给他们的顺序接收.
