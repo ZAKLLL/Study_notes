@@ -8,7 +8,7 @@
            System.out.println("准备执行多线程任务");
            final Random random = new Random(System.currentTimeMillis());
            final CountDownLatch latch = new CountDownLatch(5);
-           IntStream.rangeClosed(1, 5).forEach(i -> new Thread(() -> {
+           IntStream.rangeClosed(1, 5).forEach(i -> new Thread(() -> ,{
                System.out.println(Thread.currentThread().getName() + "is Working");
                try {
                    Thread.sleep(random.nextInt(1000));
