@@ -63,7 +63,12 @@
       ```
 
 
-+ **ChannelPipeline**:提供了ChannelHandler链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。ChannelHandler安装到ChannelPipeline中的过程如下所示：
++ **ChannelPipeline**:
+
+  每一个新创建的Channel都将会被分配一个新的ChannelPipeline。这项关联是永久性的；Channel既不能附加另外一个ChannelPipeline，也不能分离其当前的。在Netty组件的生命周期中，这是一项固定的操作，不需要开发人员的任何干预.
+
+  **ChannelPipeline**提供了**ChannelHandler**链的容器，并定义了用于在该链上传播入站和出站事件流的API。当Channel被创建时，它会被自动地分配到它专属的ChannelPipeline。ChannelHandler安装到ChannelPipeline中的过程如下所示：
+
 
   + 一个ChannelInitializer的实现被注册到了ServerBootstrap中
 
@@ -150,6 +155,85 @@
 
 
 ![image-20201225111459425](image-20201225111459425.png)
+
+## ByteBuf
+
++ release(最后一个负责):
+
+  + 如果一个[发送]组件应该将一个引用计数的对象传递给另一个[接收]组件，发送组件通常不需要销毁它，而是将这个决定推迟到接收组件。
+
+  + 如果一个组件消耗了一个引用计数的对象，并且知道没有任何其他的东西会再访问它（即不把一个引用传递给另一个组件），该组件应该销毁它。
+
+  + **注意**:在**SimpleChannelInboundHandler**和**ByteToMessageDecoder**以及**MessageToByteEncoder** 不需要手动释放计数对象.
+
+  + ```java
+    public ByteBuf a(ByteBuf input) {
+        input.writeByte(42);
+        return input;
+    }
+    
+    public ByteBuf b(ByteBuf input) {
+        try {
+            output = input.alloc().directBuffer(input.readableBytes() + 1);
+            output.writeBytes(input);
+            output.writeByte(42);
+            return output;
+        } finally {
+            input.release();
+        }
+    }
+    
+    public void c(ByteBuf input) {
+        System.out.println(input);
+        input.release();
+    }
+    
+    public void main() {
+        ...
+        ByteBuf buf = ...;
+        // This will print buf to System.out and destroy it.
+        c(b(a(buf)));
+        assert buf.refCnt() == 0;
+    }
+    ```
+
+  + why should manually release() byteBuf?
+
+    + **direct ByteBuffer** 是被直接创建在系统内核空间,非堆内存中,无法被JAVA GC所捕捉释放.
+    + 堆缓冲区在被内核处理之前，当你在执行I/O操作的时候，需要将其复制到直接内存中。当你使用直接缓冲区时，你可以省去这种复制操作，这就是使用直接缓冲区的主要优点。缺点是直接内存分配比从java堆分配要贵，所以Netty引入了pooling概念。
+
+
+
+## ChannelHandler
+
++ ChannelHandler的生命周期
+
+  ![image-20201231161725180](image-20201231161725180.png)
+
+  ![image-20201231163129726](image-20201231163129726.png)
+
++ ChannelInboundHandler:处理入站数据以及各种状态变化.
+
+  + ChannelInboundHandlerAdapter(): 适配器
+  + SimpleChannelInboundHandler(): 适配器
+
++ ChannelOutboundHandler:处理出站数据并且允许拦截所有的操作.
+
+  + ChannelOutboundHandlerAdapter():适配器
+
+### channel
+
++ channel的生命周期
+
+  ![image-20201231161515902](image-20201231161515902.png)
+
+
+
+## ChannelHandlerContext
+
+​	ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的关联， 每  当有ChannelHandler添加到ChannelPipeline中时，  都会创建ChannelHandler-Context。ChannelHandlerContext的主要功能是管理它所关联的ChannelHandler和在同一个ChannelPipeline中的其他ChannelHandler之间的交互.
+
+​	ChannelHandlerContext有很多的方法，其中一些方法也存在于Channel和ChannelPipeline本身上，但是有一点重要的不同。如果调用Channel或者ChannelPipeline上的这些方法，它们将沿着整个ChannelPipeline进行传播。而调用位于ChannelHandlerContext上的相同方法，则 将从当前所关联的ChannelHandler开始，并且只会传播给位于该ChannelPipeline中的下一个能够处理该事件的ChannelHandler。
 
 ## 注解
 
