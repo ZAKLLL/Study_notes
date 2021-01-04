@@ -277,6 +277,93 @@
 
 ​	ChannelHandlerContext有很多的方法，其中一些方法也存在于Channel和ChannelPipeline本身上，但是有一点重要的不同。如果调用Channel或者ChannelPipeline上的这些方法，它们将沿着整个ChannelPipeline进行传播。而调用位于ChannelHandlerContext上的相同方法，则 将从当前所关联的ChannelHandler开始，并且只会传播给位于该ChannelPipeline中的下一个能够处理该事件的ChannelHandler。
 
+
+
+## Netty线程模型
+
++ EventLoop的执行逻辑：
+
+  ![image-20210102213117443](image-20210102213117443.png)
+
++ EventLoop/线程的分配：
+
+  + NIO/AIO
+
+  ![image-20210102213304353](image-20210102213304353.png)
+
+  + OIO
+
+    ![image-20210102213412585](image-20210102213412585.png)
+
+
+
+## Codec
+
++ ByteToMessageDecoder:解码器
+
++ MessageToByteEncoder<I>:编码器：
+
+  当进行write操作的时候，所有的数据都将根据调用链最终被编码器进行编码
+
+  ```kotlin
+  //该String
+  ctx.writeAndFlush("HelloWorld")
+  ctx.writeAndFlush(123456)
+      
+      
+  class StringEncoder : MessageToByteEncoder<String>() {
+      override fun encode(ctx: ChannelHandlerContext, msg: String, out: ByteBuf) {
+          println("StringEncoder"+msg)
+      }
+  }
+  
+  class IntEncoder : MessageToByteEncoder<Int>() {
+      override fun encode(ctx: ChannelHandlerContext, msg: Int, out: ByteBuf) {
+          println("IntEncoder"+msg)
+      }
+  }
+  //output
+  StringEncoder1/3/21 9:51 PM
+  IntEncoder1234567
+  ```
+
+  如上所示，Int数据类型不会被I==String的Encoder进行编码，反过来String也是。核心在于，MessageToByteEncoder调用write时，会调用**acceptOutboundMessage()** 判断进入当前的msg是否为实现类中的**I**泛型类型，如果是则调用当前实现类的Encode函数进行编码，否则，调用ctx.write() 进入下一个outboundHandler(另一个Encoder) 进行逻辑处理。
+
+  ```java
+      @Override
+      public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise){ 
+          ByteBuf buf = null;
+          try {
+              if (acceptOutboundMessage(msg)) { //类型匹配
+                  @SuppressWarnings("unchecked")
+                  I cast = (I) msg;
+                  buf = allocateBuffer(ctx, cast, preferDirect);
+                  try {
+                      encode(ctx, cast, buf);
+                  } finally {
+                      ReferenceCountUtil.release(cast);
+                  }
+                  if (buf.isReadable()) {
+                      ctx.write(buf, promise);
+                  } else {
+                      buf.release();
+                      ctx.write(Unpooled.EMPTY_BUFFER, promise);
+                  }
+                  buf = null;
+              } else {
+                  ctx.write(msg, promise);
+              }
+          } finally {
+              if (buf != null) {
+                  buf.release();
+              }
+          }
+      }
+  
+  ```
+
+
+
 ## 注解
 
 + **@Sharable**:正常情况下同一个ChannelHandler,的不同的实例会被添加到不同的Channel管理的管线里面的，但是如果你需要全局统计一些信息，比如所有连接报错次数（exceptionCaught）等，这时候你可能需要使用单例的ChannelHandler，需要注意的是这时候ChannelHandler上需要添加@Sharable注解
@@ -436,3 +523,7 @@ public class TestHttpServerHandler extends SimpleChannelInboundHandler<HttpObjec
 + ChannelPipeline ： 可以看做是ChannelHandler的链表，用来添加不同的ChannelHandler
 
 + tcp每次交换数据,不保证数据会被一次性全部接收,有可能会存在,单次发送数据被分片接收.但是作为一个面向流的协议,tcp保证了数据片将会按照服务器发给他们的顺序接收.
+
++ Channel和 EventLoopGroup的兼容性
+
+  ![image-20210102215151240](image-20210102215151240.png)
