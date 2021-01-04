@@ -215,11 +215,53 @@
 + ChannelInboundHandler:处理入站数据以及各种状态变化.
 
   + ChannelInboundHandlerAdapter(): 适配器
+
   + SimpleChannelInboundHandler(): 适配器
+
+    + **调用完channelRead之后会释放ByteBuf**
+
+      ```java
+          @Override
+          public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+              boolean release = true;
+              try {
+                  if (acceptInboundMessage(msg)) {
+                      @SuppressWarnings("unchecked")
+                      I imsg = (I) msg;
+                      channelRead0(ctx, imsg);
+                  } else {
+                      release = false;
+                      ctx.fireChannelRead(msg);
+                  }
+              } finally {
+                  if (autoRelease && release) {
+                      ReferenceCountUtil.release(msg);
+                  }
+              }
+          }
+      ```
 
 + ChannelOutboundHandler:处理出站数据并且允许拦截所有的操作.
 
   + ChannelOutboundHandlerAdapter():适配器
+  
++ 常用预置Handler:
+
+  + SSl/TLS-SslHandler :
+
+    ![image-20210104091840500](image-20210104091840500.png)
+    
+  + **HttpCodeHandler** && **HttpCodc**:
+
+    ![image-20210104091922910](image-20210104091922910.png)
+
+    ![image-20210104091939961](image-20210104091939961.png)
+
+    ![image-20210104092022520](image-20210104092022520.png)
+
+  + 连接管理
+
+    ![image-20210104092342250](image-20210104092342250.png)
 
 ### channel
 
