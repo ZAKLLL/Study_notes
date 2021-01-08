@@ -23,12 +23,12 @@
 
 + ```java
   	/**
-  	 * Report a startup failure to the user.
-  	 * @param failure the source failure
-  	 * @return {@code true} if the failure was reported or {@code false} if default
-  	 * reporting should occur.
-  	 */
-  	boolean reportException(Throwable failure);
+    	 * Report a startup failure to the user.
+    	 * @param failure the source failure
+    	 * @return {@code true} if the failure was reported or {@code false} if default
+    	 * reporting should occur.
+    	 */
+    	boolean reportException(Throwable failure);
   ```
 
 + 回调接口用于支持自定义的SpringApplication启动错误的报告。

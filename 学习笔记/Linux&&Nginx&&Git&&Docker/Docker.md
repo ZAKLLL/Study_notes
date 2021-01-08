@@ -10,6 +10,8 @@
     + Docker用Rigistry来保存用户构建的镜像，Docker公司运营的Rigistry叫Docker Hub。用户可以在Docker Hub上注册账号，从而发布自己构建的镜像。而且，还可以在github上建立一个git仓，放入Dockerfile，然后在Docker Hub上创建一个自动构建项目，关联到上述github仓，则可以在git仓有更新时，自动触发构建。这种方式，可以非常有效的规避网络不稳定带来的本地构建镜像的问题，比如apt-get安装程序失败。
   + 容器Container:
     + 容器提供了程序的运行环境，把Image运行起来，就是一个容器。runtime时环境
+  + *Docker Daemon*:
+    + 运行在主机上的后台服务，管理构建、运行和分发Docker容器。守护进程是运行在操作系统中的进程，客户端与之对话。
 + Docker的安装(centos)
 
 ![1558494038894](./1558494038894.png)
@@ -176,4 +178,76 @@
   + ![1558773108647](./1558773108647.png)
 
     
+
++ Docker 网络设置:
+
+  + 创建网桥,并将网络进行绑定:
+
+    ```shell
+    #!/bin/bash
+    
+    # build the flask container
+    docker build -t prakhar1989/foodtrucks-web .
+    
+    # create the network
+    docker network create foodtrucks-net
+    
+    # start the ES container
+    docker run -d --name es --net foodtrucks-net -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    
+    # start the flask app container
+    docker run -d --net foodtrucks-net -p 5000:5000 --name foodtrucks-web prakhar1989/foodtrucks-web
+    ```
+
+  + docker network inspect xxx 网络分析:
+
+    + ```json
+      [
+          {
+              "Name": "foodtrucks-net",
+              "Id": "36a994c3dd35baefa50c0046e10e995b732f65bc569d47f4ab0c7113b4924425",
+              "Created": "2021-01-08T06:16:10.9342133Z",
+              "Scope": "local",
+              "Driver": "bridge",
+              "EnableIPv6": false,
+              "IPAM": {
+                  "Driver": "default",
+                  "Options": {},
+                  "Config": [
+                      {
+                          "Subnet": "172.19.0.0/16",
+                          "Gateway": "172.19.0.1"
+                      }
+                  ]
+              },
+              "Internal": false,
+              "Attachable": false,
+              "Ingress": false,
+              "ConfigFrom": {
+                  "Network": ""
+              },
+              "ConfigOnly": false,
+              "Containers": {
+                  "325e1186ddb54f97abbceaed498baf004d2bc50d1cfe190ec28a541f150548d7": {
+                      "Name": "es", // 在此网络中(容器中)可以通过es替代172.19.0.2 对es进行访问
+                      "EndpointID": "938e41e74f9d25a400dca99a470204b1b4038b86d85a97e0f78081cbfc830944",
+                      "MacAddress": "02:42:ac:13:00:02",
+                      "IPv4Address": "172.19.0.2/16",
+                      "IPv6Address": ""
+                  },
+                  "b2814e826dd84bf7dcfa5d40896fd23abe7fea235d05127b7f953ecc1428b34c": {
+                      "Name": "foodtrucks-web",// 在此网络中(容器中)可以通过foodtrucks-web替代172.19.0.3 对foodtrucks-web容器进行访问
+                      "EndpointID": "e328a4d9f920b10bd68ace6a4e1d124c09e38ffd4df44814d0bd6b95760c522f",
+                      "MacAddress": "02:42:ac:13:00:03",
+                      "IPv4Address": "172.19.0.3/16",
+                      "IPv6Address": ""
+                  }
+              },
+              "Options": {},
+              "Labels": {}
+          }
+      ]
+      ```
+
+      
 
