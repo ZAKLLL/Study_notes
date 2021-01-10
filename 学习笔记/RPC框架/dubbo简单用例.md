@@ -1,8 +1,10 @@
-# Dubbo学习
+# Dubbo用法示例
 
-+ 设计架构图:
+# 服务分组
 
-  ![image-20210105103813701](image-20210105103813701.png)
+使用服务分组区分服务接口的不同实现
+
+当一个接口有多种实现时，可以用 group 区分。
 
 ## 服务
 
@@ -23,4 +25,3 @@
 ```xml
 <dubbo:reference id="barService" interface="com.foo.BarService" group="*" />
 ```
-+ SPI,Adaptive,Wrapper,Activate

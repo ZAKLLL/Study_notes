@@ -90,6 +90,7 @@
 + 如果数组中的对象是原生数据类型(int,long...) ,则该对象的classloader为null
 + 自定义类加载器通过拓展类加载器来拓展JVM动态加载类的能力(通过双亲委托机制)
 + **AppClassLoader和ExtensionClassLoader是由BootStrapClassLoader(启动类加载器)加载**(由CPP编写,无需被类加载(破解先有鸡还是先有蛋的问题 ))
+  
   + 启动类加载器还会负责加载JRE正常运行所需要的基本组件,这包括java.util与java.lang包中的类等等。
 + 类加载器通常会被安全管理器所使用来确保类加载过程的安全。
 + 类加载器的命名空间：
@@ -102,8 +103,52 @@
   + **父加载器所加载的类无法访问到字加载器所加载的类**
 + 线程上下文类加载器-context Classloader
   + 线程上下文类加载器就是当前线程的Current Classloader.
+
   + 父ClassLoader可以使用当前线程Thead.currentThread().getContextClassLoader()所指定的classloader加载的类。间接改变了父ClassLoader不能使用子ClassLoader或是其他没有直接父子关系的ClassLoader加载的类的情况,即改变了双亲委托模型。
+
   + 在双亲委托模型下,类加载是由下至上的，即下层的类加载器会委托上层进行加载.但是对于SPI(Service provider Interface)来说,有些接口是Java核心库所提供的,而Java核心库是由启动类加载器来加载的，而这些SPI接口的实现来自于不同的Jar包(厂商提供),Java的启动类加载器是不会加载其他来源的Jar包，这样的传统的双亲委托模型就无法满足SPI的要求。而通过给当前线程设置上下文类加载器，就可以设置上下文类加载来实现对于接口实现类的加载
+
+    + SPI加载：
+
+      + 定义服务接口与实现类
+
+        ```java
+        package javaSpi.service;
+        public interface Robot {
+            void sayHello();
+        }
+        ```
+
+        ```java
+        package javaSpi.service.impl;
+        public class OptimusPrime implements Robot {
+            @Override
+            public void sayHello() {
+                System.out.println("OptimusPrime : Hello");
+            }
+        }
+        /*-------------------------------*/
+        public class Bumblebee implements Robot {
+            @Override
+            public void sayHello() {
+                System.out.println("Bumblebee : Hello");
+            }
+        }
+        ```
+
+      + 注册到META-INF中
+
+        ![image-20210107134137433](image-20210107134137433.png)
+
+      + 测试:
+
+        ```java
+        public void sayHelloTest() {
+            ServiceLoader<Robot> serviceLoader = ServiceLoader.load(Robot.class);
+            System.out.println("Java Spi");
+            serviceLoader.forEach(Robot::sayHello);
+        }
+        ```
 
 ## 双亲委托机制与自定义类加载器
 
