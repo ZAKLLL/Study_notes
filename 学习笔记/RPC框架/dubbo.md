@@ -25,3 +25,4 @@
 ```xml
 <dubbo:reference id="barService" interface="com.foo.BarService" group="*" />
 ```
+
