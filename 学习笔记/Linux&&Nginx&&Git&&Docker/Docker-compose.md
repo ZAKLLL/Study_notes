@@ -1,5 +1,41 @@
 # Docker-Compose
 
++ 示例:
+
+```yml
+version: "3"
+services:
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    container_name: es
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+  web:
+    build: .
+    command: python3 app.py
+    environment:
+      - DEBUG=True
+    depends_on:
+      - es
+    ports:
+      - 5000:5000
+    volumes:
+      - ./flask-app:/opt/flask-app
+volumes:
+    esdata1:
+      driver: local
+```
+
+
+
+
+
+
+
 + 启动
 
   - docker-compose up ：以依赖性顺序启动服务。在以下示例中，先启动 db 和 redis ，才会启动 web。
@@ -29,14 +65,19 @@
 ## docker-compose.yml 配置文件
 
 \# yaml 配置
-version**:** '3'
+
+```yml
+version: '3'
 services:
  web:
-  build**:** .
-  ports**:
-**   - "5000:5000"
+  build:.
+  ports:
+	- "5000:5000"
  redis:
-  image**:** "redis:alpine"
+  image: "redis:alpine"
+```
+
+
 
 该 Compose 文件定义了两个服务：web 和 redis。
 
