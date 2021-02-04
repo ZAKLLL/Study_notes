@@ -1,5 +1,9 @@
 + **@oneToMany **VS **@ManyToOne**
 
++ **referencedColumnName** 是Many方外键
+
++ **name** 是one方的被关联的键
+
   + ```java
     @Entity
     public class One{
