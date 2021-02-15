@@ -46,6 +46,5 @@
     $$ LANGUAGE plpgsql;
     
     select replacetime(245136, 246236)
-```
-    
-    
+    ```
+
