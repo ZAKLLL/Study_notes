@@ -8,6 +8,7 @@
 | Shift + Alt + “-“ | 竖向分屏                |
 | Ctrl + Shift + w  | 取消分屏/关闭当前标签页 |
 | Ctrl + Shift + t  | 打开新标签页            |
+| Shift + Alt + “D“ | 自动分屏                |
 
  
 
