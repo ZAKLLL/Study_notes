@@ -1,4 +1,4 @@
-# SpringJpa 一级缓存导致的数据异常问题
+# SpringJpa 一级缓存导致的数据异常问题解决方案
 
 + 背景: 存在如下一段代码逻辑
 
@@ -89,7 +89,7 @@
 
   + 在执行插入后马上查询的操作时,新插入的entity会被缓存到Jpa(hiberinate)的一级缓存**session**中,当执行findAll的时候,会优先查询以及缓存中的entity,此时的entity为刚刚插入实体,并没有进行实际关联B表信息,b 仍然为null,不符合期望.
 
-+ 解决方案:
++ 解决方案(1):
 
   + 既然问题是由于Jpa一级缓存造成的,则对症下药,在进行查询前,清除Session中的缓存,令Jpa完整执行一次从数据库中查询的动作,则顺带完成了对于B表的关联查询操作
 
@@ -127,5 +127,66 @@
     ]
     ````
 
+  + 存在其他问题:
+
+    **entityManager** 不是一个线程安全的操作,直接执行**entityManager.clear()**操作可能导致其他需要但是仍未进行持久化操作并且处于session中的entity被全部清除掉,可能会引发,业务异常.
+
+    **entityManager.clear()** 
+
+    ```
+    Clear the persistence context, causing all managed entities to become detached. Changes made to entities that have not been flushed to the database will not be persisted
     
+    清除持久化上下文，使所有被管理的实体脱离。对未被刷新到数据库的实体所做的更改将不会被持久化。
+    ```
+
++ 解决方案(2):
+
+  + 使用**entityManager.detach()** 函数,对需要保存到的新A,进行save并flush到数据库中,然后在entityManager中清除每一个新插入的A entity:
+
+    该函数javaDoc文档:
+
+    ```
+    Remove the given entity from the persistence context, causing a managed entity to become detached. Unflushed changes made to the entity if any (including removal of the entity), will not be synchronized to the database. Entities which previously referenced the detached entity will continue to reference it.
+    
+    从持久化上下文中删除给定的实体，使被管理的实体脱离。如果对实体有任何未刷新的更改（包括删除实体），将不会同步到数据库。之前引用被分离实体的实体将继续引用它。
+    ```
+
+  + 解决实现:
+
+    ````java
+    @Autowired
+    private ADao adao;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
+    
+    public List<A> saveAndFind(){
+        A a=new A();
+        a.setBid(1);
+        aDao.saveAndFlush(a);
+        
+    	//在session中清除被缓存的a对象
+        entityManager.detach(a);
+        
+    	List<A> aList = aDao.findAll();
+    }
+    ````
+
+  + 输出结果
+
+    ````json
+    [
+      {
+        "id": 3,
+        "b": {
+          "id": 1,
+          "info": "b_info"
+        }
+      }
+    ]
+    ````
+
+​    
+
+​    
 
