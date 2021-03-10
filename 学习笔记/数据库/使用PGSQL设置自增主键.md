@@ -117,4 +117,5 @@
 
 + [pgsql数据库表实现id自增](https://blog.csdn.net/feinifi/article/details/96478675)
 + [pgsql sequence](https://www.postgresql.org/docs/8.2/functions-sequence.html)
++ [使用navicat 创建pgsql id自增](https://www.pianshen.com/article/32311749236/)
 
