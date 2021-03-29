@@ -164,11 +164,25 @@
 
 ### 系统任务相关：
 + 将命令放置在后台执行：&（放置在命令之后） vim f1.txt &
+
 + 当前命令的终止:crtl+c
+
 + 将正在执行的命令放置在后台并且暂停执行::crtl+z
+
 + 将后台暂停的命令变成继续执行
+
 + 查看后台运行的命令：jobs
+
+  + 其中**+** 表示当前任务,**-** 表示当前任务的前一个任务
+
+    ```shell
+    [1]    running    bin/kafka-server-start.sh config/server.properties
+    [2]  + running    ./bin/kafka-server-start.sh config/server-1.properties
+    [3]  - running    ./bin/kafka-server-start.sh config/server-2.properties
+    ```
+
 + 将后台命令调至前台继续执行：fg %num
+
 + 将后台停止的进程在后台继续运行: bg %num
 
 ### tar命令：
