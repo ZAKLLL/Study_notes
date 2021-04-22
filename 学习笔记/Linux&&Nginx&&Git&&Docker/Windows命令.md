@@ -2,7 +2,9 @@
 
 + 根据端口查询进程: `netstat -ano|findstr '8080'`
 
-+ 强杀进程: ` taskkill  /pid -f  'pid'`
++ 强杀进程: ` taskkill  /pid -f  -t 'pid'`
+
+  + **-t** 表示同时删除对应的子进程
 
 + 强杀某端口进程脚本:
 
