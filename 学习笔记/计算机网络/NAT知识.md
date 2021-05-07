@@ -114,3 +114,4 @@
   10. At worst, the second packet from A reaches B; at worst the second packet from B reaches A. Holes have been "punched" in the NAT and both hosts can directly communicate.
 
   - If both hosts have [Restricted cone NATs](https://en.wikipedia.org/wiki/Restricted_cone_NAT) or [Symmetric NATs](https://en.wikipedia.org/wiki/Symmetric_NAT), the external NAT ports will differ from those used with S. On some routers, the external ports are picked sequentially, making it possible to establish a conversation through guessing nearby ports.
+
