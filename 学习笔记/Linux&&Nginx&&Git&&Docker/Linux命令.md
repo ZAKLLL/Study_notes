@@ -382,6 +382,42 @@
    \ 插入\字符；
    \nnn 插入nnn（八进制）所代表的ASCII字符；
    ```
+   
+5. bash命令:
+
+   ```bash
+   编辑
+   Ctrl + U    删除光标前的所有内容
+   Ctrl + K    删除光标后的所有内容
+   
+   Ctrl + W    删除光标前的一个单词
+   Ctrl + H    删除光标前一个字符(backspace)
+   
+   Ctrl + T    交换光标前的两个字符
+   Esc + T     交换光标前的两个单词
+   
+   ctrl + _, 撤销上一次删除操作
+   ctrl + y, 撤销上一次 ctrl + u的删除操作(实际上是将上一次剪切的文本重新粘贴到光标位置)
+   ctrl + ?, 撤销上一次的输入操作
+   
+   光标移动
+   Ctrl + A    光标移动到字符串头
+   Ctrl + E    光标移动到字符串尾
+   Ctrl + B 	光标移动到上一个字符
+   Ctrl + F	光标移动到下一个字符
+   Alt + F    	光标移动到下一个单词
+   Alt + B     光标移动到上一个单词
+   
+   其他
+   
+   Ctrl + L    清屏(clear)
+   Ctrl + R    在history中搜索
+   Ctrl + C    关闭当前程序
+   Ctrl + D    退出当前shell
+   Ctrl + Z    将当前程序挂起到后台
+   
+   Tab         Auto-complete files and folder names
+   ```
 
 
 ### 抓包
