@@ -35,3 +35,10 @@
     	private One one;
     }
     ```
+
+
+
++ @DynamicInsert:
+  + 对于插入,该实体是否应该使用动态sql生成,如果为true,表示忽略null值,仅插入非null字段,如果数据库存在null字段的default,使用数据库的该字段的default值
++ @DynamicUpdate:
+  + 为了进行更新，此实体是否应使用动态sql生成，为true的话，仅仅更新非null字段。请注意，对于被**detached**的Entity，如果不启用select-before-update，这是不可能的
