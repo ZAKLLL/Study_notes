@@ -25,7 +25,7 @@
 
 - 2.Symmetric Nat只有来自同一主机，同一端口发送到同一目的主机、端口，映射的公网IP和端口才会一致
 
-#### 一、Full Cone Na(完全锥形NAT)
+#### 一、Full Cone NAT(完全锥形NAT)
 
 **特点：**IP和端口都不受限。
 
