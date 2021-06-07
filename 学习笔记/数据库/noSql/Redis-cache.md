@@ -12,11 +12,13 @@
 
   + maxmemory-policy:
     1. **noeviction**: 不做内存置换,当client执行命令使得server端超过了maxmemory 时，返回错误信息
-    2. **allkeys-lru**：通过Lru算法(latest recently used) 清除key
-    3. **volatile-lru**: 通过Lru算法(latest recently used) 清除key(需要key过期 key expire)
-    4. **allkeys-random**: 随机清除key
-    5. **volatile-random**:随机清除key(需要key过期 key expire)
-    6. **volatile-ttl**: 随机清除key(需要key过期 key expire),并且尝试清除TTL(time to live) 较短的keys
+    2. **allkeys-lru**：通过Lru算法(latest frequently used) 清除key
+    3. **allkeys-lfu**: 通过Lfu算法(latest frequently used) 清除key
+    4. **volatile-lru**: 通过Lru算法(latest recently used) 清除key(需要key过期 key expire)
+    5. **volatile-lfu**: 通过Lfu算法(latest recently used) 清除key(需要key过期 key expire)
+    6. **allkeys-random**: 随机清除key
+    7. **volatile-random**:随机清除key(需要key过期 key expire)
+    8. **volatile-ttl**: 随机清除key(需要key过期 key expire),并且尝试清除TTL(time to live) 较短的keys
   + 其中当满足条件的keys不存在的时候, **volatile-lru**, **volatile-random** 和 **volatile-ttl** 策略对应的行为会和 **noeviction** 一样
 
 + 如何选择一个合适的cache策略:
@@ -31,7 +33,7 @@
   + Redis检查内存的使用情况，如果它大于maxmemory的限制，它就会根据策略来驱逐键。
   + 一个新的命令被执行，以此类推。
 
-## Lru_cache
+## LRU_cache(最近最少使用)
 
 + Approximated LRU algorithm
 
@@ -51,40 +53,19 @@
 
 
 
-## Lfu_cache
+## LFU_cache(最不经常使用)
 
-Starting with Redis 4.0, a new [Least Frequently Used eviction mode](http://antirez.com/news/109) is available. This mode may work better (provide a better hits/misses ratio) in certain cases, since using LFU Redis will try to track the frequency of access of items, so that the ones used rarely are evicted while the one used often have an higher chance of remaining in memory.
++ Approximated LFU mode: 它使用一个概率计数器，称为 [Morris counter](https://en.wikipedia.org/wiki/Approximate_counting_algorithm),对每个对象使用几个bit 来进行访问的计数，结合一个衰减期配置，使计数器随着时间的推移而减少,因为在某些时候，我们不再想把钥匙视为频繁访问，即使它们在过去是频繁访问的，这样算法就能适应访问模式的转变。
++ LFU有一些可调整的参数：例如，如果一个原本被频繁的访问的key不再被访问，它应该以多快的速度降低排名(排名越低,被淘汰的概率越高)？也可以调整Morris计数器的范围，以便更好地使算法适应特定的使用情况。
+  + 默认LFU配置参数
+    + `lfu-log-factor 10`: 计数器最多支持到100万次访问计数(此配置与访问命中率的关系如下表) 
+      + LFU计数器每个键只有8位，它的最大值是255，所以Redis使用了一种对数行为的概率递增法。当一个键被访问时，计数器会以这种方式递增:
+        1. A random number R between 0 and 1 is extracted.
+        2. A probability P is calculated as 1/(old_value*lfu_log_factor+1).
+        3. The counter is incremented only if R < P.
+    + `lfu-decay-time 1`:  每分钟衰减一次计数器.
 
-If you think at LRU, an item that was recently accessed but is actually almost never requested, will not get expired, so the risk is to evict a key that has an higher chance to be requested in the future. LFU does not have this problem, and in general should adapt better to different access patterns.
-
-To configure the LFU mode, the following policies are available:
-
-- `volatile-lfu` Evict using approximated LFU among the keys with an expire set.
-- `allkeys-lfu` Evict any key using approximated LFU.
-
-LFU is approximated like LRU: it uses a probabilistic counter, called a [Morris counter](https://en.wikipedia.org/wiki/Approximate_counting_algorithm) in order to estimate the object access frequency using just a few bits per object, combined with a decay period so that the counter is reduced over time: at some point we no longer want to consider keys as frequently accessed, even if they were in the past, so that the algorithm can adapt to a shift in the access pattern.
-
-Those informations are sampled similarly to what happens for LRU (as explained in the previous section of this documentation) in order to select a candidate for eviction.
-
-However unlike LRU, LFU has certain tunable parameters: for instance, how fast should a frequent item lower in rank if it gets no longer accessed? It is also possible to tune the Morris counters range in order to better adapt the algorithm to specific use cases.
-
-By default Redis 4.0 is configured to:
-
-- Saturate the counter at, around, one million requests.
-- Decay the counter every one minute.
-
-Those should be reasonable values and were tested experimental, but the user may want to play with these configuration settings in order to pick optimal values.
-
-Instructions about how to tune these parameters can be found inside the example `redis.conf` file in the source distribution, but briefly, they are:
-
-```
-lfu-log-factor 10
-lfu-decay-time 1
-```
-
-The decay time is the obvious one, it is the amount of minutes a counter should be decayed, when sampled and found to be older than that value. A special value of `0` means: always decay the counter every time is scanned, and is rarely useful.
-
-The counter *logarithm factor* changes how many hits are needed in order to saturate the frequency counter, which is just in the range 0-255. The higher the factor, the more accesses are needed in order to reach the maximum. The lower the factor, the better is the resolution of the counter for low accesses, according to the following table:
++ 计数器的对数因子**lfu-log-factor**配置了需要多少次访问才能使计数器达到饱和，它只是在0-255范围内。系数越高，需要更多的访问量才能达到最大值。根据下表，系数越低，计数器对低访问量的分辨率越好。
 
 ```
 +--------+------------+------------+------------+------------+------------+
@@ -99,8 +80,3 @@ The counter *logarithm factor* changes how many hits are needed in order to satu
 | 100    | 8          | 11         | 49         | 143        | 255        |
 +--------+------------+------------+------------+------------+------------+
 ```
-
-So basically the factor is a trade off between better distinguishing items with low accesses VS distinguishing items with high accesses. More informations are available in the example `redis.conf` file self documenting comments.
-
-Since LFU is a new feature, we'll appreciate any feedback about how it performs in your use case compared to LRU.
-
