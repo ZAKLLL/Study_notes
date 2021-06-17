@@ -108,6 +108,11 @@
   git status
   ```
 
++ git reset:
+
+   + git reset –-soft: 回退到某个版本，只回退了commit的信息，不会恢复到index file一级。如果还要提交，直接commit即可；
+   + git reset -–hard: 彻底回退到某个版本，本地的源码也会变为上一个版本的内容，撤销的commit中所包含的更改被冲掉；
+
 + 远程仓库的重命名与移除
 
 你可以运行 `git remote rename` 来修改一个远程仓库的简写名。 例如，想要将 `pb` 重命名为 `paul`，可以用 `git remote rename` 这样做：

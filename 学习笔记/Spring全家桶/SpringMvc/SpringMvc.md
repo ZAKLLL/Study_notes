@@ -505,7 +505,7 @@ public String T(String name,String password,Model model){
 
 + 方式二 利用@requestparam
 
-![1546138065783](../../images/1546138065783.png)
+![1546138065783](../../../images/1546138065783.png)
 
 
 
@@ -563,7 +563,7 @@ public String MA(User user){
 
 classpath通常指的是resource文件夹
 
-![这里的内容用classpath：/xxxx来获取](../../images/1547902557255.png)
+![这里的内容用classpath：/xxxx来获取](../../../images/1547902557255.png)
 
 
 
@@ -583,5 +583,5 @@ public class WebPatInitServlet extends HttpServlet {
 
 
 
-![1547902707912](../../images/1547902707912.png)
+![1547902707912](../../../images/1547902707912.png)
 
