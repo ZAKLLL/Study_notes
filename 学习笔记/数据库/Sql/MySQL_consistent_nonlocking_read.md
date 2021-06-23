@@ -10,7 +10,7 @@
 
 ### 不同隔离级别下的读取模式
 
-+ REPEATABLE READ（默认级别):
++ **REPEATABLE READ**（默认级别):
 
   + 同一事务中的所有一致读取都会读取该事务中第一次读取所建立的快照。即对于同一条**DQL** **无锁 select sql ** ,在同一个事务中,无论读取执行多少次,都是一样的数据返回,如果想要读取到其他事务并发执行的**DML**(insert/update/delete)操作,需要等待当前事务提交完毕后,再次查询。
 
@@ -40,7 +40,7 @@
 
     
 
-  + **Notes**
+  + ***Notes***
 
     + 快照适用于**DQL(SELECT)** 语句,但不一定适用于**DML**语句,eg:
 
@@ -78,7 +78,7 @@
       -- Returns 10: this txn can now see the rows it just updated.
       ```
 
-+ READ COMMITTED:
++ **READ COMMITTED**:
 
   + 在READ COMMITTED隔离级别下,事务中的每个一致读取都会以读取时间为pointTime,创建新的快照(此快照包含了其他事务在此时间点之前的commited)
 
