@@ -10,7 +10,16 @@
 
 ![1568274341196](../../../images/1568274341196.png)
 
+参数设置：
 
++ java -Xmx3550m -Xms3550m -Xmn 10 m -Xss128k -XX:SurvivorRatio=6
+  + -Xmx3550m:设置JVM最大可用内存为3550M. 
+  + -Xms3550m:设置JVM促使内存为3550m.此值可以设置与-Xmx相同,以避免每次垃圾回收完成后JVM重新分配内存. 
+  + -Xmn 2g:设置年轻代大小为2G.
+  + -Xss128k:设置每个线程的堆栈大小. 
+  + -XX:SurvivorRatio=6:设置年轻代中Eden区与一个Survivor区的大小比值.设置为6,则总Survivor:Eden=2:6;一个Survivor区占整个年轻代的1/8=1.25;Eden区占3/4=7.5；
++ JVM 启动默认参数：-Xmx为物理内存的1/4，-Xms为物理内存的1/64，
++ jvm 调优文档:[Tuning Java Virtual Machines (JVMs) (oracle.com)](https://docs.oracle.com/cd/E21764_01/web.1111/e13814/jvm_tuning.htm#PERFM167)
 
 ## 类加载：
 
