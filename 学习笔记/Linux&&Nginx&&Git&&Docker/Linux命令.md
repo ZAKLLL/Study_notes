@@ -359,18 +359,6 @@
   + 重启服务即可生效: /etc/init.d/iptables restart
   + 查看开放端口是否生效:/sbin/iptables -L -n
 
-+ 1. firewalld的基本使用
-  2. 启动： systemctl start firewalld
-  3. 关闭： systemctl stop firewalld
-  4. 查看状态： systemctl status firewalld 
-  5. 开机禁用 ： systemctl disable firewalld
-  6. 开机启用 ： systemctl enable firewalld
-  7. 开放端口： firewall-cmd --zone=public --add-port=5672/tcp --permanent  （开放5672端口，tcp协议
-  8. 关闭端口： firewall-cmd --zone=public --remove-port=5672/tcp --permanent （关闭5672端口
-  9. 刷新配置： firewall-cmd --reload 
-  10. 查看防火墙所有开放的端口 firewall-cmd --zone=public --list-port
-
-
 
 ### other
 
