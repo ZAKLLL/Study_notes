@@ -47,3 +47,21 @@
     A–>B–>C。当前项目为A，A依赖于B，B依赖于C。知道B在A项目中的scope，那么怎么知道C在A中的scope呢？答案是： 
     当C是test或者provided时，C直接被丢弃，A不依赖C； 
     否则A依赖C，C的scope继承于B的scope。
+
+
+
+
+
+### package && install && deploy
+
+仔细查看三个命令执行输出的结果，可以发现，
+
+- **mvn clean package** 依次执行了clean、resources、compile、testResources、testCompile、test、jar(打包)等７个阶段。
+- **mvn clean install** 依次执行了clean、resources、compile、testResources、testCompile、test、jar(打包)、install等 8个阶段。
+- **mvn clean deploy** 依次执行了clean、resources、compile、testResources、testCompile、test、jar(打包)、install、deploy等９个阶段。
+
+由上面的分析可知主要区别如下，
+
+- **package** 命令完成了项目编译、单元测试、打包功能，但没有把打好的可执行jar包（war包或其它形式的包）布署到本地maven仓库和远程maven私服仓库
+- **install** 命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包（war包或其它形式的包）布署到本地maven仓库，但没有布署到远程maven私服仓库
+- **deploy** 命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包（war包或其它形式的包）布署到本地maven仓库和远程maven私服仓库
