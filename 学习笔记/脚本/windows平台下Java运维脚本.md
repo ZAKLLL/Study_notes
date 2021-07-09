@@ -1,3 +1,105 @@
+# Windows 平台下Java 服务运维脚本
+
++ BG:
+
+  + 在项目开发过程中开发人员时常需要对服务端项目进行更新部署的动作,已满足前后端测试/功能发布等实际情况。我们将这个任务大致分解为:
+
+    1. 找到服务器上运行的java服务进行关闭.
+    2. 将上一个版本正常运行的jar包进行备份,以保证可随时回滚。
+    3. 复制传输即将发布的新版本jar包.
+    4. 更改配置文件(xxx.properties/xxx.yaml...)
+    5. 执行类似于 start_jar_app.bat/start_jar_app.cmd 脚本进行启动项目.
+    6. 结束更新.
+
+  + 对于步骤一:因为服务器通常是多开发人员共享且可登陆的,每一次登陆上去,都需要先找到自己上一次发布的服务，并且精确的关闭,但是有可能会出现如下的情况:
+
+    ​	![image-20210709145839452](image-20210709145839452.png)
+
+    运行了一堆jar包,哪一个是我想要的服务呢,还有可能出现上一次使用了另一个账户登陆,这次登陆后没有在任务栏发现自己上次发布的jar包,别说关闭了,找到要关闭的服务都十分费劲: (
+
+  + 对于步骤二: 打开资源管理器,进入D盘(或者其他的什么服务盘),再一层一层定位到jar包所在文件夹,复制jar包到backup文件目录下用以备份文件,你甚至还会遇到这种烦人的情况,需要手动点击一次:
+    <img src="image-20210709150356785.png"  width=300 heigth=24>
+
+  + 最后执行你的启动服务行为。
+
++ Solution:
+
+  + 这一套组合拳下来,不花个几分钟结束不了事儿.并且多次发布这种部署更新之后，会发现其实做的行为都是重复机械性的劳作.那么有没有能够快速部署更新，进行备份的工具呢，网上搜寻一番，给出的方案大多是基于CI/CD 来做，考虑到项目部大部分的项目没有使用jekins/gitlab runner等ci/cd工具，且需要提前在服务器安装部署对应服务。成本还是挺高的，鉴于此，我们编写了一个简易的java 服务运维脚本 -------- **easyjar**
+  + easyjar 能够提供的能力如下:
+    + 目标 java应用自动查杀
+    + 目标 jar包自动备份
+    + 应用自动更新重启
+    + 兼容 bat/cmd 脚本,兼容 properties/yaml 配置文件格式
+    + 提供配置文件,可选快速配置开发服务器中的jar包父目录(考虑到一个测试服务器通常部署多个java应用,且各jar所在目录处于同级文件夹)
+    + 提供可选更新功能,自动查杀/备份之后,可按需更新jar包
+    + 操作简单快捷,下方会进行演示
+    + 提供.exe 执行文件和python源码,各项目组可根据实际情况定制化修改
+
++ eg:
+
+  + 使用步骤:
+
+    + 首先在**jarManager.properties**中配置一次java 服务所在地址:
+
+      + **此地址为各jar包所在目录的根目录！以便于easyJar支持目标目录下的所有java 运维服务**
+
+        ```java
+        # 配置需要扫描的 目标jar包所在目录的父目录 
+        # 如果不配置，则默认为 'D:\\application\dev'
+        javaAppLocation=D:\application\dev
+        #javaAppLocation = D:\Projects\SPMS\packageWeb
+        ```
+
+    1. 复制你需要进行更新的jar应用到 **updataJars** 文件夹中
+
+       ![image-20210709153544312](image-20210709153544312.png)
+
+       ![image-20210709153554138](image-20210709153554138.png)
+
+    2. 启动webJarManager.exe 程序,程序会列出正在目标目录下正在运行的所有java应用
+
+       ![image-20210709152418159](image-20210709152418159.png)
+
+    3. 输入对应的 pid 用以查杀/备份java服务，这里以spmsweb.jar为例：
+
+       ![image-20210709152539183](image-20210709152539183.png)
+
+       回车执行:
+
+       ![image-20210709153611493](image-20210709153611493.png)
+
+    4. 进行更新启动操作(Y/Y1/N)
+
+       ![image-20210709152737656](image-20210709152737656.png)
+
+    
+
+  
+
+  
+
+  + 至此,一个完整的java服务运维动作完成,操作成本浓缩为如下两个操作:
+    + **传输jar**
+    + **启动webJarManager.exe**
+  + 解放双手从我做起！
+
+
+### other: 
+
++ 此脚本为windows下的简单java服务自动化运维脚本,且由于使用了**wmic** 进行部分能力的实现，所以服务器应需要存在此组件(应该大部分的都有了吧！)
+
++ 对于linux下的java 服务自动化运维,我也曾使用python写了一个简单工具,大家有兴趣的可以参考下面这个link,现在看起来十分简陋,如果能给各位提供一点效率思路想法也是不错的:
+
+  + [Python 自动部署JAVA项目 - zakl's blog](http://120.76.62.44/archives/python自动部署java项目)
+
+  
+
+
+
+
+
+### 脚本源代码(base on Python3)
+
 ```python
 import os
 import re
@@ -266,8 +368,6 @@ def restartNewJarApp():
     # 执行重启行为
     targetJarPath = jarLocationMap[realJarName]
 
-    print(jarLocationMap)
-
     if realJarName+'_shell' not in jarLocationMap.keys():
         print("不存在可執行脚本.bat/.cmd")
         input()
@@ -346,7 +446,6 @@ print(banner)
 # 初始化配置文件
 initFormConfigFile()
 
-
 # 执行目标目录扫描，获取jar信息
 jarCatalogInit()
 
@@ -363,6 +462,7 @@ backUpJar()
 restartNewJarApp()
 
 input()
-
 ```
+
+
 
