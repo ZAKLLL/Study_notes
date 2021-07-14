@@ -74,6 +74,18 @@
   | `s`  | setuid/gid   | 当文件被执行时，根据who参数指定的用户类型设置文件的setuid或者setgid权限 |
   | `t`  | 粘贴位       | 设置粘贴位，只有超级用户可以设置该位，只有文件所有者u可以使用该位 |
 
+### 追加环境变量
+
++ 临时
+
+  ```bash
+  PATH=%PATH:%PWD
+  ```
+
++ 永久
+
+  [Linux环境变量配置全攻略 - 悠悠i - 博客园 (cnblogs.com)](https://www.cnblogs.com/youyoui/p/10680329.html)
+
 
 
 
