@@ -6,6 +6,10 @@
     spring.jackson.time-zone=GMT+8
     ```
 
+
+
+
+
 + 关于**@PostConstruct**与**ApplicationContextAware**的冲突问题
 
 + 现在有这样一个业务代码
@@ -93,5 +97,19 @@
      
      ```
 
-     
+
+
+
++ 本地开发可以访问resources下的静态资源，打包之后无法正常访问:
+
+  ```java
+  //本地开发可以访问,是因为本地使用文件类型进行静态资源访问.
+  File file=new ClassPathResource("template/xxx.xlsx").getFile();
+  
+  //打包成jar之后需要以下形式访问,因为目标文件是被压缩在jar包之中，不能通过访问文件的方式进行访问
+  InputStream inputStream = new ClassPathResource("template/xxx.xlsx").getInputStream();
+  
+  ```
+
+  
 
